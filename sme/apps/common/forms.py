@@ -41,3 +41,11 @@ class RegistrationForm(forms.Form):
         user.set_password(data['password'])
         user.save()
         return user
+
+    def clean_confirm_password(self):
+        password = self.cleaned_data['password']
+        confirm_password = self.cleaned_data['confirm_password']
+
+        if password != confirm_password:
+            raise forms.ValidationError("Passwords didn't match!")
+        return confirm_password
