@@ -1,0 +1,17 @@
+body {
+	background-color: #dcdcdc;
+}
+.login {
+	margin: 80px auto 0;
+}
+.login-panel { 
+    min-width: 250px; 
+    border-top: 14px solid #0080c5;
+    border-right: 1px solid #0080c5;
+    border-bottom-right-radius:0.5em;
+    -moz-border-radius-bottomright:0.5em;
+    border-bottom: 3px solid #0080c5;
+    border-left: 1px solid #0080c5;
+    border-bottom-left-radius:0.5em;
+    -moz-border-radius-bottomleft:0.5em;
+}
