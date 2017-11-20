@@ -2,22 +2,35 @@
 
 {% load static %}
 
+{% block title %}Profile{% endblock title %}
+
+{% block extra-css %}
+    <style type="text/css">
+        .m-t-50 {
+            margin-top: 0px !important;
+        }
+    </style>
+{% endblock extra-css %}
+
 {% block content %}
     <div class="container">
         <div class="row p-t-20">
+            {% with profile_industry=profile.industry.all %}
             <div class="col-md-4 col-sm-8">
                 <div class="panel panel-default contentbg b-ra-0 p-t-15 p-l-15 p-b-5 p-r-15 m-t-50">
                     <div class="panel-heading bg-grey-light">
                             <div class="row">
                                     <div class="col-lg-4 col-sm-12 text-center-sm">
-                                         <img src="{% static 'img/user7-128x128.jpg' %}" class="img-circle b-w-2" alt="profile-icon-female" width="98" height="98">
+                                         <img src="{% if profile.photo.url %}{{ profile.photo.url }}{% else %}{% static 'img/no-photo.png' %}{% endif %}" class="img-circle b-w-2" alt="profile-icon-female" width="98" height="98">
                                     </div>
                                     <div class="col-lg-8 col-sm-12">
-                                            <h4 class="text-blue m-b-4"> Niki Kohari </h4>
-                                            <p class="f-s-11"> <i class="fa fa-map-marker" aria-hidden="true"></i> Raleigh, N.C, United States </p>
+                                            <h4 class="text-blue m-b-4"> {{ user.get_full_name | title }} </h4>
+                                            <p class="f-s-11"> <i class="fa fa-map-marker" aria-hidden="true"></i> {{ profile.city }}, {{ profile.state }}, {{ profile.country }} </p>
                                             <p class="text-ellipsis f-s-11 clearfix">
-                                                <i class="fa fa-tag fa-rotate-90 d-i-b" aria-hidden="true"></i>
-                                                <span class="d-i-b p-l-2">Business consulting and coaching</span>
+                                                {% for i in profile_industry|slice:":1" %}
+                                                  <i class="fa fa-tag fa-rotate-90 d-i-b" aria-hidden="true"></i>
+                                                  <span class="d-i-b p-l-2">{{ i.name }}</span>
+                                                {% endfor %}
                                             </p>
                                             <div class="recent-activity p-t-4 p-b-4 border-top-1 border-bottom-1">
                                                 <span class="p-r-10">Recent Activity</span>
@@ -32,11 +45,9 @@
                         <div class="row bg-white">
                             <div class="col-sm-12">
                                 <h4>How I Can Help</h4>
-                                <p>Human Resources &#187; Employee Training</p>
+                                <!--<p>Human Resources &#187; Employee Training</p>-->
                                 <p>
-                                    Many desktop publishing packages and web page editors now use Lorem Ipsum as their default
-                                    model text, and a search for 'lorem ipsum' will uncover many
-                                    web sites still in their infancy.
+                                    {{ profile.about_me | truncatewords:10 }}
                                 </p>
                             </div>
                         </div>
@@ -48,6 +59,12 @@
                         </button>
                     </div>
                 </div>
+                <div class="col-md-12">
+                        <a href="{% url 'edit-profile' pk=profile_id %}" class="btn btn-primary" title="Edit Profile">
+                          <i class="fa fa-pencil d-i-b" aria-hidden="true"></i>
+                          Edit Profile
+                        </a>
+                </div>
             </div>
             <!-right section Start->
             <div class="col-md-8 col-sm-12">
@@ -58,10 +75,13 @@
                                          <img src="{% static 'img/user7-128x128.jpg' %}" class="img-circle center-block b-w-2" alt="profile-icon-male" width="76" height="76">
                                     </div>
                                     <div class="col-sm-9 col-md-10">
-                                            <h5 class="text-blue m-t-5 m-b-4"> Niki Kohari </h4>
+                                            <h5 class="text-blue m-t-5 m-b-4"> {{ user.get_full_name | title }} </h4>
                                             <ul class="list-unstyled small">
-                                                <li><i class="fa fa-map-marker" aria-hidden="true"></i> Raleigh, N.C, United States</li>
-                                                <li><i class="fa fa-tag fa-rotate-90" aria-hidden="true"></i> Business consulting and coaching</li>
+                                                <li><i class="fa fa-map-marker" aria-hidden="true"></i> {{ profile.city }}, {{ profile.state }}, {{ profile.country }}</li>
+                                                {% for i in profile_industry %}
+                                                  <li><i class="fa fa-tag fa-rotate-90" aria-hidden="true"></i> {{ i.name }}</li>
+                                                {% endfor %}
+
                                             </ul>
                                             <div class="recent-activity p-t-4 p-b-4 border-top-1 border-bottom-1">
                                                 <span class="p-r-10">Recent Activity</span>
@@ -92,34 +112,10 @@
                             <div class="panel-body">
                                 <div class="row">
                                     <div class="col-md-7">
-                                        <p>
-                                            Many desktop publishing packages and web page editors now use
-                                            Lorem Ipsum as their default model text, and a search for
-                                            'lorem ipsum' will uncover many web sites still in their infancy.
-                                            Various versions have evolved over the years, sometimes by accident,
-                                            sometimes on purpose (injected humour and the like).
-                                        </p>
-                                        <p>
-                                            Contrary to popular belief, Lorem Ipsum is not simply random text.
-                                            It has roots in a piece of classical Latin literature from 45 BC,
-                                            making it over 2000 years old. Richard McClintock, a Latin professor
-                                            at Hampden-Sydney College in Virginia, looked up one of the more
-                                            obscure Latin words, consectetur, from a Lorem Ipsum passage,
-                                            and going through the cites of the word in classical literature,
-                                            discovered the undoubtable source.
-                                        </p>
-                                        <p>
-                                            This book is a treatise on the theory of ethics, very popular
-                                            during the Renaissance. The first line of Lorem Ipsum,
-                                            "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
-                                        </p>
+                                        <p>{{ profile.about_me }}</p>
                                         <h4>My Professinal Experience</h4>
                                         <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                            Fusce id metus tortor. Suspendisse aliquam leo at turpis
-                                            porta malesuada. Nulla eu justo cursus, sollicitudin ante at,
-                                            egestas tellus. Maecenas vulputate, metus ut commodo maximus,
-                                            metus quam feugiat elit, sit amet pharetra urna turpis sed dolor.
+                                            {{ profile.professional_experience }}
                                         </p>
                                     </div>
                                     <div class="col-md-5 ex-request">
@@ -127,13 +123,9 @@
                                             <div>Expertise</div>
                                             <ul class="list-unstyled">
                                                 <li>
-                                                    <span class="p-l-5 p-r-5">&#187;</span>Human Resources <span class="p-l-5 p-r-5">&#187;</span>Employee Training
-                                                    <span class="p-l-5 p-r-5">&#187;</span>Getting Started <span class="p-l-5 p-r-5">&#187;</span>Getting Started
-                                                    <span class="p-l-5 p-r-5">&#187;</span>Management <span class="p-l-5 p-r-5">&#187;</span>Growth and Development
-                                                    <span class="p-l-5 p-r-5">&#187;</span>Management <span class="p-l-5 p-r-5">&#187;</span>Leadership
-                                                    <span class="p-l-5 p-r-5">&#187;</span>Management <span class="p-l-5 p-r-5">&#187;</span>Planing and Goal Setting
-                                                    <span class="p-l-5 p-r-5">&#187;</span>Management <span class="p-l-5 p-r-5">&#187;</span>Project Management
-                                                    <span class="p-l-5 p-r-5">&#187;</span>Management <span class="p-l-5 p-r-5">&#187;</span>Work-Life Balance
+                                                    {% for i in profile_industry %}
+                                                        <span class="p-l-5 p-r-5">&#187;</span>{{ i.name }}
+                                                    {% endfor %}
                                                 </li>
                                             </ul>
                                             <hr />
@@ -168,6 +160,7 @@
                 </div>
             </div>
             <!-/right section End->
+            {% endwith %}
         </div>
     </div>
 

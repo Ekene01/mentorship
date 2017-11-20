@@ -2,6 +2,8 @@
 
 {% load static %}
 
+{% block title %}Register{% endblock title %}
+
 {% block content %}
     <div class="container">
         <div class="row">
@@ -11,7 +13,7 @@
                         <strong class="panel-title">Register</strong>
                     </div>
                     <div class="panel-body">
-                        <form action="." method="post" class="form-horizontal" role="form" name="register-form">{% csrf_token %}
+                        <form action="." method="post" class="form-horizontal" id="register-form" role="form" name="register-form">{% csrf_token %}
                             {% with err=form.first_name.errors %}
                             <div class="form-group{% if err %} has-error{% endif %}">
                                 <label for="first_name" class="col-sm-4 control-label">
@@ -62,13 +64,24 @@
                                 </div>
                             </div>
                             {% endwith %}
+                            {% with err=form.profile_type.errors %}
+                            <div class="form-group{% if err %} has-error{% endif %}">
+                                <label for="id_profile_type" class="col-sm-4 control-label">
+                                        I am </label>
+                                <div class="col-sm-8">
+                                    {{ form.profile_type }}
+                                    <span class="text-danger">{{ err.0 }}</span>
+                                </div>
+                            </div>
+                            {% endwith %}
                             <div class="form-group">
                                 <div class="col-sm-offset-4 col-sm-8">
                                         <div class="checkbox">
                                                 <label>
-                                                        <input type="checkbox">
-                                                        Remember me
+                                                        <input type="checkbox" name="agree-terms">
+                                                        Agree to terms and conditions
                                                 </label>
+                                                <div class="text-danger agree-terms" style="display: none;">Please agree to terms</div>
                                         </div>
                                 </div>
                             </div>
@@ -83,7 +96,7 @@
                         </form>
                     </div>
                     <div class="panel-footer">
-                        Already Registered? <a href="login.html">login here</a>
+                        Already Registered? <a href="{% url 'login' %}">login here</a>
                     </div>
                 </div>
             </div>
@@ -92,3 +105,18 @@
     <!-- Register form end-->
 {% endblock content %}
 
+{% block extra-js %}
+    <script type="text/javascript">
+        $(function() {
+            $("#register-form").submit(function(event) {
+                var agree_terms = $('input[name=agree-terms]:checked').length;
+                if (!agree_terms) {
+                    $('.agree-terms').show();
+                    return false;
+                }
+                return true;
+
+            });
+        });
+    </script>
+{% endblock extra-js %}

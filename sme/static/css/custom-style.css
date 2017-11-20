@@ -1,2 +1,139 @@
 /*Custom style for all pages*/
-/*entrepreneur-profile.html CSS*/
+/*conversations.html CSS*/
+.conversations .user-detail .ribbon {
+	top: -10px;
+	right: 5px;
+}
+.start-coversation .popover.in {
+	right: 0 !important;
+	background: #eeeeee;
+	box-shadow: 0 1px 2px rgba(0,0,0,.35);
+    border: none;
+    border-radius: 0;
+	min-width: 380px;
+}
+.start-coversation .popover.in .popover-content {
+    padding: 5px 0 0 20px;
+}
+/*self-assessment.html*/
+.self-assessment .c100 {
+    margin: 20px auto;
+	background-color: #dddddd;
+}
+.self-assessment .c100:after {
+	background-color: #ffffff;
+}
+/* Arrow Tab CSS */
+.arrow-steps .step {
+	font-size: 14px;
+	text-align: center;
+	margin: 0 10px;
+	padding: 6px 5px 6px 25px;
+	float: left;
+	position: relative;
+	background-color: #ffffff;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none; 
+	transition: background-color 0.2s ease;
+}
+
+.arrow-steps .step:after,
+.arrow-steps .step:before {
+	content: " ";
+	position: absolute;
+	top: 0;
+	right: -16px;
+    width: 0;
+    height: 0;
+    border-top: 17px solid transparent;
+    border-bottom: 16px solid transparent;
+    border-left: 16px solid #ffffff;
+	z-index: 2;
+	transition: border-color 0.2s ease;
+}
+
+.arrow-steps .step:before {
+	right: auto;
+	left: 0;
+	border-left: 17px solid #38afd3;	
+	z-index: 0;
+}
+
+.arrow-steps .step:first-child:before {
+	border: none;
+}
+
+.arrow-steps .step:first-child {
+	border-top-left-radius: 4px;
+	border-bottom-left-radius: 4px;
+	padding-left: 10px;
+}
+.arrow-steps .step.current {
+	color: #fff;
+	background-color: #23468c;
+}
+
+.arrow-steps .step.current:after {
+	border-left: 17px solid #23468c;	
+}
+.arrow-steps .step span {
+	position: relative;
+}
+
+.arrow-steps .step.done span:before {
+	opacity: 0;
+	content: "✔";
+	position: relative;
+    top: 0;
+    left: 0;
+    display: inline-block;
+    padding: 0 5px 0 5px;
+}
+
+.arrow-steps .step.done span:before {
+	opacity: 1;
+	-webkit-transition: opacity 0.3s ease 0.5s;
+	-moz-transition: opacity 0.3s ease 0.5s;
+	-ms-transition: opacity 0.3s ease 0.5s;
+	transition: opacity 0.3s ease 0.5s;
+}
+
+.arrow-steps .step.current {
+	color: #fff;
+	background-color: #23468c;
+}
+
+.arrow-steps .step.current:after {
+	border-left: 17px solid #23468c;	
+}
+/*edit-profile.html*/
+#accordion.edit-profile .panel .panel-heading {
+	padding: 0;
+}
+#accordion.edit-profile .panel .panel-heading a {
+	display: block;
+	padding: 10px 15px;
+}
+/*file upload button*/
+.btn-bs-file{
+    position:relative;
+}
+.btn-bs-file input[type="file"]{
+    position: absolute;
+    top: -9999999px;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    width:0;
+    height:0;
+    outline: none;
+    cursor: inherit;
+}
+/*end file upload button*/
+#clone-sections .section:first-child {
+	padding-top: 0;
+}
+#clone-sections .section {
+	border-bottom: 1px solid #bdbdbd;
+}
