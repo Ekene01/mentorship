@@ -1,0 +1,18 @@
+<!DOCTYPE.html>
+<html>
+    <head>
+        <title>Conversation</title>
+    </head>
+    <body>
+        <p>Dear {{ to_user_first_name }},</p>
+        <br />
+        <p>{{ from_user_first_name }} has sent the following message.</p>
+        <p style="color: #ccc;">{{ message }}</p>
+        <br />
+        <p>Please <a href="{{ BASE_URL }}/send/message/{{ from_user_id }}/">click here</a> to reply.</p>
+        <p>
+            Regards,<br />
+            SME Admin
+        </p>
+    </body>
+</html>

@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Search Group{% endblock title %}
+
+{% block extra-css %}
+    <style type="text/css">
+        .m-t-50 {
+            margin-top: 0px !important;
+        }
+    </style>
+{% endblock extra-css %}
+
+{% block content %}
+
+	<div class="container">
+		<div class="panel panel-default m-t-20">
+			<div class="panel-heading">
+				<div class="f-s-24"> <b> Find Groups </b> </div>
+				<p> We have sorted these search results based on information in the gropus. </p>
+			</div>
+			<div class="panel-body">
+					<form action="." method="get" class="form-horizontal">
+							<div class="form-group row">
+								<div class="col-sm-4">
+									{{ form.keywords }}
+								</div>
+								{% comment %}
+                                <div class="col-sm-4">
+									{{ form.country }}
+								</div>
+								<div class="col-sm-4">
+									{{ form.languages_spoken }}
+								</div>
+                                {% endcomment %}
+							</div>
+
+								<div class="clearfix">
+								<div class="pull-right">
+									<button type="submit" class="btn btn-danger"> Filter groups </button>
+								</div>
+								</div>
+							<div class="row">
+								{% for result in results %}
+								<div class="col-md-4 col-sm-8">
+									 <div class="panel border m-t-20 m-b-0">
+											<div class="panel-heading bg-grey-light">
+												 <div class="row">
+														<div class="col-lg-4 col-sm-12 text-center">
+															 <img src="{% if result.logo %}{{ result.logo.url }}{% else %}{% static 'img/no-photo.png' %}{% endif %}" class="img-circle b-w-2" alt="profile-icon-female" width="98" height="98">
+														</div>
+														<div class="col-lg-8 col-sm-12">
+															 <h4 class="text-blue m-b-4"> {{ result.title | title }} </h4>
+														</div>
+												 </div>
+											</div>
+											<div class="panel-body p-b-0 p-t-0">
+												 <div class="row bg-white">
+														<div class="col-sm-12">
+															 <p class="text-ellipsis">"{{ result.description | truncatewords:"5" }}"</p>
+														</div>
+												 </div>
+											</div>
+										</div>
+										<div>
+												 <a href="{% url 'group-detail' pk=result.id %}" class="btn btn-danger">
+												 View Group
+												 </a>
+											</div>
+								</div>
+								{% empty %}
+									<div class="col-md-4 col-sm-8">
+										There are no results!
+									</div>
+
+								{% endfor %}
+
+							</div>
+					</form>
+
+			</div>
+		</div>
+
+  </div>
+	<!-- Page section end-->
+{% endblock content %}
+
+{% block extra-js %}
+    <!-- Custom JavaScript
+           ================================================== -->
+	<script type="text/javascript">
+		function showSearchbox() {
+			$('input#srch-term').toggleClass('show hide');
+			$('.navbar-form').toggleClass('active');
+		}
+		function showAdvacnedOptions() {
+			$('#AdvOpts').slideToggle();
+		}
+	</script>
+{% endblock extra-js %}

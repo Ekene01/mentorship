@@ -21,11 +21,11 @@
                     <div class="panel-heading bg-grey-light">
                             <div class="row">
                                     <div class="col-lg-4 col-sm-12 text-center-sm">
-                                         <img src="{% if profile.photo.url %}{{ profile.photo.url }}{% else %}{% static 'img/no-photo.png' %}{% endif %}" class="img-circle b-w-2" alt="profile-icon-female" width="98" height="98">
+                                         <img src="{% if profile.photo %}{{ profile.photo.url }}{% else %}{% static 'img/no-photo.png' %}{% endif %}" class="img-circle b-w-2" alt="profile-icon-female" width="98" height="98">
                                     </div>
                                     <div class="col-lg-8 col-sm-12">
                                             <h4 class="text-blue m-b-4"> {{ user.get_full_name | title }} </h4>
-                                            <p class="f-s-11"> <i class="fa fa-map-marker" aria-hidden="true"></i> {{ profile.city }}, {{ profile.state }}, {{ profile.country }} </p>
+                                            {% if profile.location %}<p class="f-s-11"> <i class="fa fa-map-marker" aria-hidden="true"></i> {{ profile.location }} </p>{% endif %}
                                             <p class="text-ellipsis f-s-11 clearfix">
                                                 {% for i in profile_industry|slice:":1" %}
                                                   <i class="fa fa-tag fa-rotate-90 d-i-b" aria-hidden="true"></i>
@@ -47,7 +47,7 @@
                                 <h4>How I Can Help</h4>
                                 <!--<p>Human Resources &#187; Employee Training</p>-->
                                 <p>
-                                    {{ profile.about_me | truncatewords:10 }}
+                                    {% if profile.about_me %}{{ profile.about_me | truncatewords:10 }}{% endif %}
                                 </p>
                             </div>
                         </div>
@@ -72,12 +72,12 @@
                     <div class="panel-heading bg-grey-light">
                             <div class="row">
                                     <div class="col-sm-3 col-md-2">
-                                         <img src="{% static 'img/user7-128x128.jpg' %}" class="img-circle center-block b-w-2" alt="profile-icon-male" width="76" height="76">
+                                         <img src="{% if profile.photo %}{{ profile.photo.url }}{% else %}{% static 'img/no-photo.png' %}{% endif %}" class="img-circle center-block b-w-2" alt="profile-icon-female" width="76" height="76">
                                     </div>
                                     <div class="col-sm-9 col-md-10">
                                             <h5 class="text-blue m-t-5 m-b-4"> {{ user.get_full_name | title }} </h4>
                                             <ul class="list-unstyled small">
-                                                <li><i class="fa fa-map-marker" aria-hidden="true"></i> {{ profile.city }}, {{ profile.state }}, {{ profile.country }}</li>
+                                                {% if profile.location %}<li><i class="fa fa-map-marker" aria-hidden="true"></i> {{ profile.location }} </li>{% endif %}
                                                 {% for i in profile_industry %}
                                                   <li><i class="fa fa-tag fa-rotate-90" aria-hidden="true"></i> {{ i.name }}</li>
                                                 {% endfor %}
@@ -112,10 +112,10 @@
                             <div class="panel-body">
                                 <div class="row">
                                     <div class="col-md-7">
-                                        <p>{{ profile.about_me }}</p>
+                                        <p>{{ profile.about_me|default_if_none:"" }}</p>
                                         <h4>My Professinal Experience</h4>
                                         <p>
-                                            {{ profile.professional_experience }}
+                                            {{ profile.professional_experience|default_if_none:"" }}
                                         </p>
                                     </div>
                                     <div class="col-md-5 ex-request">

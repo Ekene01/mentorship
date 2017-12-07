@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Search{% endblock title %}
+
+{% block extra-css %}
+    <style type="text/css">
+        .m-t-50 {
+            margin-top: 0px !important;
+        }
+    </style>
+{% endblock extra-css %}
+
+{% block content %}
+	
+	<div class="container">
+		<div class="panel panel-default m-t-20">
+			<div class="panel-heading">
+				<div class="f-s-24"> <b> Find Mentors and Connect </b> </div>
+				<p> We have sorted these search results based on information in your profile. </p>
+			</div>
+			<div class="panel-body">
+					<form class="form-horizontal">
+							<div class="form-group row">
+								<div class="col-sm-4"> 
+									{{ form.industry }}
+								</div>
+								<div class="col-sm-4"> 
+									{{ form.country }}
+								</div>
+								<div class="col-sm-4"> 
+									{{ form.languages_spoken }}
+								</div>
+							</div>
+							<span class="text-blue cursor-p" onclick="showAdvacnedOptions()"> Advanced Options </span> 
+							<div class="clearfix p-0 m-0" id="AdvOpts" style="display:none;"> 
+							<div class="form-group row m-t-15">
+								<div class="col-sm-4"> 
+									{{ form.keywords}}
+								</div>
+								{% comment %}
+								<div class="col-sm-4"> 
+									<select class="form-control" id="LanguageSpoken">
+										<option> Language Spoken</option>
+										<option> English</option>
+										<option> Spanish </option>
+										<option>Chinese </option>
+									</select>
+								</div>
+								<div class="col-sm-4"> 
+									<select class="form-control" id="Countries">
+										<option> India </option>
+										<option> United States</option>
+									</select>
+								</div>
+								{% endcomment %}
+							</div>
+							{% comment %}
+							<div class="form-group row">
+								<div class="col-sm-4"> 
+									<select class="form-control" id="Organzatiions">
+										<option>Your Organizations </option>
+										<option> IT Softwares </option>
+										<option> ITES </option>
+									</select>
+								</div>
+							</div>
+							{% endcomment %}
+							</div>
+								<div class="clearfix"> 
+								<div class="pull-right"> 
+									<button type="submit" class="btn btn-danger"> Filter Results </button>
+								</div>
+								</div> 
+							<div class="row">
+								{% for profile in profiles %}
+								<div class="col-md-4 col-sm-8">
+									 <div class="panel border m-t-20 m-b-0">
+											<div class="panel-heading bg-grey-light">
+												 <div class="row">
+														<div class="col-lg-4 col-sm-12 text-center">
+															 <img src="{% if profile.photo %}{{ profile.photo.url }}{% else %}{% static 'img/no-photo.png' %}{% endif %}" class="img-circle b-w-2" alt="profile-icon-female" width="98" height="98">
+														</div>
+														<div class="col-lg-8 col-sm-12">
+															 <h4 class="text-blue m-b-4"> {{ profile.user.get_full_name | title }} </h4>
+															 <p class="f-s-11"> <i class="fa fa-map-marker" aria-hidden="true"></i> {{ profile.location }} </p>
+														</div>
+												 </div>
+											</div>
+											<div class="panel-body p-b-0 p-t-0">
+												 <div class="row bg-rose">
+												 <div class="bg-white p-5 clearfix"> <span class="text-green"> <i class="fa fa-check"></i> Member:</span>  </div>
+														<div class="col-md-12 p-b-10">
+															 <h4 class="text-blue"> I am </h4>
+															 <P class="text-ellipsis-l-3">
+																{{ profile.about_me | truncatewords:"4" }}
+															 </P>
+														</div>
+												 </div>
+												 <div class="row bg-white">
+														<div class="col-sm-12">
+															 <div class="ribbon">
+																	<span class="label label-info">Started in 2017
+																	</span>
+															 </div>
+															 <h4 class="text-blue">My Business</h4>
+															 <h5 class="f-w-600">MINT SEXTY</h5>
+															 {% for i in profile.industry.all %}
+															 	<p class="small"> <i class="fa fa-tag fa-rotate-90" aria-hidden="true"></i> {{ i.name }} </p>
+															 {% endfor %}
+															 <p class="text-ellipsis">"{{ profile.about_me | truncatewords:"4" }}"</p>
+														</div>
+												 </div>
+											</div>
+										</div>
+										<div>
+												 <a href="{% url 'conversation' to_user_id=profile.user.id %}" class="btn btn-danger">
+												 Connect 
+												 <span class="bg-white rounded-corner p-2 p-l-3 arrow-circle"><i class="fa fa-arrow-right text-red f-s-11"></i></span>
+												 </a>
+											</div>
+								</div>
+								{% empty %}
+									<div class="col-md-4 col-sm-8">
+										There are no results!
+									</div>
+
+								{% endfor %}
+
+							</div>
+					</form>
+
+			</div>
+		</div>		
+
+  </div>
+	<!-- Page section end-->	
+{% endblock content %}
+
+{% block extra-js %}
+    <!-- Custom JavaScript
+           ================================================== -->
+	<script type="text/javascript">
+		function showSearchbox() {
+			$('input#srch-term').toggleClass('show hide');
+			$('.navbar-form').toggleClass('active');
+		}
+		function showAdvacnedOptions() {
+			$('#AdvOpts').slideToggle();
+		}
+	</script>
+{% endblock extra-js %}

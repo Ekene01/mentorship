@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Training detail{% endblock title %}
+
+{% block extra-css %}
+{% endblock extra-css %}
+
+{% block content %}
+		<div class="container">
+			<div class="f-s-24 h1 m-b-0"><i class="fa fa-home text-theme"></i>Training</div>
+			<div class="row p-t-20">
+				<div class="col-md-4 col-sm-8">
+					<div class="panel panel-default">
+						<div class="panel-heading">Training</div>
+						<div class="panel-body">
+							<div class="row">
+								<div class="col-lg-4 col-sm-12 text-center-sm">
+									 <img src="{% if group.logo %}{{ group.logo.url }}{% else %}{% static 'img/no-photo.png' %}{% endif %}" class="img-circle b-w-2" alt="profile-icon-female" width="98" height="98">
+								</div>
+								<div class="col-lg-8 col-sm-12">
+										<h4 class="text-blue m-b-4"> {{ group.title }} </h4>
+										<p class="text-ellipsis f-s-11 m-b-0"> {{ group.descriotion | truncatewords:"3" }} </p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-heading">Training Materials</div>
+						<div class="panel-body">
+							<div class="clearfix p-t-15">
+								<button type="button" class="btn btn-grey btn-block">Conversations</button>
+								<button type="button" class="btn btn-grey btn-block">Videos</button>
+                                <button type="button" class="btn btn-grey btn-block">Documents</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-right section Start->
+				<div class="col-md-8 col-sm-12">
+					<div class="panel panel-default contentbg b-ra-0">
+						<div class="panel-heading">MY CONVERSATIONS</div>
+						<div class="panel-body bg-white">
+							<div class="row">
+							<div class="border m-15 m-t-0 clearfix">
+								<div class="col-sm-2">
+									<img src="../assets/img/511535626.jpg" class="img-circle b-w-2 m-t-5" alt="Group-member-profile" width="98" height="98">
+								</div>
+								<div class="col-sm-3">
+										<h5 class="text-blue"> <b> Dharshan Suryavashi </b></h5>
+										<h5> 22-12-2017 </h5>
+										<h5> Entrepreneur</h5>
+								</div>
+								<div class="col-sm-5">
+										<h4 class="text-blue"> Hi Dharshan ,</h5>
+										<p class="text-ellipsis-l-3">
+									Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. VariousLorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various
+										</p>
+								</div>
+								<div class="col-sm-2">
+										<button type="button" class="btn btn-danger btn-block m-t-10"> View</button>
+								</div>
+							</div>
+						</div>
+							<div class="row">
+							<div class="border m-15 m-t-0 clearfix">
+								<div class="col-sm-2">
+									<img src="../assets/img/511535626.jpg" class="img-circle b-w-2 m-t-5" alt="Group-member-profile" width="98" height="98">
+								</div>
+								<div class="col-sm-3">
+										<h5 class="text-blue"> <b> Dharshan Suryavashi </b></h5>
+										<h5> 22-12-2017 </h5>
+										<h5> Entrepreneur</h5>
+								</div>
+								<div class="col-sm-5">
+										<h4 class="text-blue"> Hi Dharshan ,</h5>
+										<p class="text-ellipsis-l-3">
+									Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. VariousLorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various
+										</p>
+								</div>
+								<div class="col-sm-2">
+										<button type="button" class="btn btn-danger btn-block  m-t-10"> View</button>
+								</div>
+							</div>
+						</div>
+							<button type="button" class="btn btn-grey btn-block">View all Conversations</button>
+						</div>
+					</div>
+				</div>
+				<!-/right section End->
+			</div>
+		</div>
+
+		<!-- Page section end-->
+{% endblock content %}

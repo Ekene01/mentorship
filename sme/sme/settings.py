@@ -137,6 +137,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 LOGIN_REDIRECT_URL = '/profile/'
 LOGOUT_REDIRECT_URL = '/login/'
 
+# Email settings
+DEFAULT_FROM_EMAIL = 'help@smehelp'
+
 try:
     from local_settings import *
 except ImportError:

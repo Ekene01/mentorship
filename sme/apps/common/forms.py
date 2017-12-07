@@ -8,7 +8,7 @@ from datetime import date
 
 from .models import (EntrepreneurProfile, MentorProfile,
                      Industry, Languages, Experience,
-                     COUNTRY_CHOICES)
+                     Conversation, Course, COUNTRY_CHOICES)
 
 PROFILE_TYPE_CHOICES = [
     ('', '-- Select --'),
@@ -18,8 +18,12 @@ PROFILE_TYPE_CHOICES = [
 
 MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 cur_year = date.today().year
-EXPERIENCE_MONTH_CHOICES = [(month_val, month_val) for month_val in enumerate(MONTHS)]
+EXPERIENCE_MONTH_CHOICES = [(index + 1, month_val) for index, month_val in enumerate(MONTHS)]
 EXPERIENCE_YEAR_CHOICES = [(year_val, year_val) for year_val in reversed(range(cur_year - 50, cur_year + 1))]
+INDUSTRY_CHOICES = [(val, val) for val in Industry.objects.all().values_list('name', flat=True)]
+INDUSTRY_CHOICES.insert(0, ('', '-- Select --'))
+LANGUAGES_CHOICES = [(val, val) for val in Languages.objects.all().values_list('name', flat=True).distinct()]
+LANGUAGES_CHOICES.insert(0, ('', '-- Select --'))
 
 class RegistrationForm(forms.Form):
     first_name = forms.CharField(max_length=30,
@@ -129,31 +133,59 @@ class MentorProfileEditForm(ProfileForm):
         exclude = ('user',)
 
 class ExperienceForm(forms.ModelForm):
-    name = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control",
-                                                            "placeholder": "Address",
+    name = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control width-200 d-i-b ver-align-m",
+                                                            "placeholder": "Name",
                                                             "required": ""}))
-    country = forms.ChoiceField(widget=forms.Select(attrs={"class": "form-control",
+    country = forms.ChoiceField(widget=forms.Select(attrs={"class": "form-control width-200 d-i-b ver-align-m",
                                                            "required": ""}),
                                 choices=COUNTRY_CHOICES)
-    start_month = forms.ChoiceField(widget=forms.Select(attrs={"class": "form-control",
+    start_month = forms.ChoiceField(widget=forms.Select(attrs={"class": "form-control width-200 d-i-b ver-align-m",
                                                            "required": ""}),
                                 choices=EXPERIENCE_MONTH_CHOICES)
-    start_year = forms.ChoiceField(widget=forms.Select(attrs={"class": "form-control",
+    start_year = forms.ChoiceField(widget=forms.Select(attrs={"class": "form-control width-200 d-i-b ver-align-m",
+                                                           "required": ""}),
+                                choices=EXPERIENCE_YEAR_CHOICES)
+    end_month = forms.ChoiceField(widget=forms.Select(attrs={"class": "form-control width-200 d-i-b ver-align-m",
                                                            "required": ""}),
                                 choices=EXPERIENCE_MONTH_CHOICES)
-    end_month = forms.ChoiceField(widget=forms.Select(attrs={"class": "form-control",
+    end_year = forms.ChoiceField(widget=forms.Select(attrs={"class": "form-control width-200 d-i-b ver-align-m",
                                                            "required": ""}),
-                                choices=EXPERIENCE_MONTH_CHOICES)
-    end_year = forms.ChoiceField(widget=forms.Select(attrs={"class": "form-control",
-                                                           "required": ""}),
-                                choices=EXPERIENCE_MONTH_CHOICES)
+                                choices=EXPERIENCE_YEAR_CHOICES)
     industry = forms.ModelMultipleChoiceField(queryset=Industry.objects.all(),
-                                              widget=forms.SelectMultiple(attrs={"class": "form-control",
+                                              widget=forms.SelectMultiple(attrs={"class": "form-control width-200 d-i-b ver-align-m",
                                                                                  "required": ""}))
-    url = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control",
+    url = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control width-200 d-i-b ver-align-m",
                                                             "placeholder": "Website URL",
                                                             "required": ""}))
 
     class Meta:
         model = Experience
         exclude = ('created_at',)
+
+class ConversationForm(forms.ModelForm):
+    message = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 6, 'cols': 40,
+                                                           'placeholder': "Write a nice message"}))
+
+    class Meta:
+        model = Conversation
+        exclude = ('created_at', 'from_user', 'to_user')
+
+class SearchForm(forms.Form):
+    industry = forms.ChoiceField(widget=forms.Select(attrs={"class": "form-control"}),
+                                 choices=INDUSTRY_CHOICES,
+                                 required=False)
+    country = forms.ChoiceField(widget=forms.Select(attrs={"class": "form-control"}),
+                                 choices=COUNTRY_CHOICES, required=False)
+    languages_spoken = forms.ChoiceField(widget=forms.Select(attrs={"class": "form-control"}),
+                                    choices=LANGUAGES_CHOICES,
+                                         required=False)
+    keywords = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control",
+                                                            "placeholder": "Special keywords"}),
+                               required=False)
+
+
+class CourseForm(forms.ModelForm):
+
+    class Meta:
+        model = Course
+        exclude = ('owner', )

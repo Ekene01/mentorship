@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Conversation{% endblock title %}
+
+{% block content %}
+    <div class="container conversations">
+        {% if messages %}
+	      {% for message in messages %}
+	        <div class="top-msg-blk fade in alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>
+	          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+	          {{ message }}
+	        </div>
+	      {% endfor %}
+      {% endif %}
+        <div class="panel panel-default m-t-20">
+            <div class="panel-heading bg-white">
+                <div class="f-s-24"> <b> Connect with {{ profile.user.get_full_name | title }} </b> </div>
+            </div>
+            <div class="panel-body bg-theme">
+                <div class="row p-t-20">
+                    <div class="col-md-4 col-sm-8 user-detail">
+                        <div class="panel panel-default bg-grey-light contentbg b-ra-0 p-l-5 p-r-15">
+                            <div class="panel-heading bg-grey-light border-bottom-0 p-b-0">
+                                <div class="ribbon">
+                                    <span class="label label-info">Pre-Startup</a>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4 col-sm-12 text-center">
+                                         <img src="{% if profile.photo %}{{ profile.photo.url }}{% else %}{% static 'img/no-photo.png' %}{% endif %}" class="img-circle b-w-2" alt="profile-icon-female" width="98" height="98">
+                                    </div>
+                                    <div class="col-lg-8 col-sm-12">
+                                            <h4 class="text-blue m-b-4"> {{ profile.user.get_full_name | title }} </h4>
+                                            <p class="f-s-11 m-b-0"> <i class="fa fa-map-marker" aria-hidden="true"></i>{{ profile.location }}</p>
+                                            <p class="text-ellipsis f-s-11 clearfix">
+                                                {% for i in profile_industry|slice:":1" %}
+                                                    <i class="fa fa-tag fa-rotate-90 d-i-b" aria-hidden="true"></i>
+                                                    <span class="d-i-b p-l-2">{{ i.name }}</span>
+                                                {% endfor %}
+                                            </p>
+                                            <div class="recent-activity p-t-4 p-b-4 border-top-1 border-bottom-1">
+                                                <span class="p-r-10">Recent Activity</span>
+                                                <img src="{% static 'img/commenting-icon32x32.png' %}" class="" alt="commenting-icon32x32" width="16" height="16">
+                                                <img src="{% static 'img/commenting-icon1-32x32.png' %}" class="" alt="commenting-icon1-32x32" width="16" height="16">
+                                                <img src="{% static 'img/commenting-icon1-32x32.png' %}" class="" alt="commenting-icon1-32x32" width="16" height="16">
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body p-t-0">
+                                <div class="row">
+                                    <h5 class="f-w-600 p-l-15">What I Need Help With</h5>
+                                    <div class="col-sm-12">
+
+                                        <div class="more">
+                                            {{ profile.about_me }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-/right section Start->
+                    <div class="col-md-8 col-sm-12">
+                        {% comment %}
+                        <div class="start-coversation text-right">
+                            <a href="#" class="popper" data-toggle="popover">Start a Conversation</a>
+                            <div class="popper-content p-t-5 p-r-0 p-b-0 p-l-20 hide">
+                                <div class="panel panel-default bg-theme no-border b-ra-0 p-0">
+                                    <div class="panel-heading bg-grey-light border-bottom-0">
+                                        <div class="row">
+                                            <div class="col-lg-4 col-sm-12 text-center">
+                                                 <img src="{% static 'img/profile-icon-female.png' %}" class="img-circle b-w-2" alt="profile-icon-female" width="98" height="98">
+                                            </div>
+                                            <div class="col-lg-8 col-sm-12">
+                                                    <h4 class="text-blue m-b-4"> N Kelso </h4>
+                                                    <p class="f-s-11 m-b-0"> <i class="fa fa-map-marker" aria-hidden="true"></i> Lewieville, TX, United States </p>
+                                                    <p class="text-ellipsis f-s-11 clearfix">
+                                                        <i class="fa fa-tag fa-rotate-90 d-i-b" aria-hidden="true"></i>
+                                                        <span class="d-i-b p-l-2">Business consulting and coaching</span>
+                                                    </p>
+                                                    <div class="recent-activity p-t-4 p-b-4 border-top-1 border-bottom-1">
+                                                        <span class="p-r-10">Recent Activity</span>
+                                                        <img src="{% static 'img/commenting-icon32x32.png' %}" class="" alt="commenting-icon32x32" width="16" height="16">
+                                                        <img src="{% static 'img/commenting-icon1-32x32.png' %}" class="" alt="commenting-icon1-32x32" width="16" height="16">
+                                                        <img src="{% static 'img/commenting-icon1-32x32.png' %}" class="" alt="commenting-icon1-32x32" width="16" height="16">
+                                                    </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix m-t-20 p-r-20">
+                                        <button type="button" class="btn btn-danger btn-block">
+                                            Start a Conversation
+                                            <span class="bg-white rounded-corner p-2 p-l-3 arrow-circle"><i class="fa fa-arrow-right text-red f-s-11"></i></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endcomment %}
+
+                        <form action="." method="post" role="form" name="conversation-form">{% csrf_token %}
+                            {{ form.errors }}
+                            {% with err=form.message.errors %}
+                            <div class="form-group{% if err %} has-error{% endif %}">
+                                {{ form.message }}
+                                <span class="text-danger">{{ err.0 }}</span>
+                            </div>
+                            {% endwith %}
+                            <h4 class="text-blue">Make a good first impression</h4>
+                            <ul>
+                                <li>
+                                    Share with the entreprenuer how your background is relevant to the challenges they are trying to solve.
+                                </li>
+                                <li>
+                                    Describe your avalability and preferred comunication style.
+                                </li>
+                                <li>
+                                    Propose an introductory phone conversation to get to know the entreprenuer better and learn if you will
+                                    be able to help.
+                                </li>
+                            </ul>
+                            <div class="form-group clearfix">
+                                <button type="submit" class="btn btn-danger pull-left">Send Message</button>
+                                <button type="button" class="btn btn-white pull-right">Block future messages</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-/right section End->
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
