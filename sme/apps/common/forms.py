@@ -6,9 +6,10 @@ from django import forms
 from django.contrib.auth.models import User
 from datetime import date
 
-from .models import (EntrepreneurProfile, MentorProfile,
+from .models import (Profile, EntrepreneurProfile, MentorProfile,
                      Industry, Languages, Experience,
-                     Conversation, Course, COUNTRY_CHOICES)
+                     Conversation, Course, COUNTRY_CHOICES, GENDER_CHOICES,
+                     BIRTH_YEAR_CHOICES)
 
 PROFILE_TYPE_CHOICES = [
     ('', '-- Select --'),
@@ -44,7 +45,7 @@ class RegistrationForm(forms.Form):
     confirm_password = forms.CharField(max_length=32, widget=forms.PasswordInput(attrs={"class": "form-control",
                                                                                         "placeholder": "Confirm Password",
                                                                                         "required": ""}))
-    profile_type = forms.ChoiceField(widget=forms.Select(attrs={"class": "form-control",
+    profile_type = forms.ChoiceField(widget=forms.RadioSelect(attrs={"class": "form-control",
                                                                 "required": ""},
                                                         ),
                                      choices=PROFILE_TYPE_CHOICES)
@@ -64,11 +65,11 @@ class RegistrationForm(forms.Form):
         user.set_password(data['password'])
         user.save()
         profile_type = data['profile_type']
+        profile = Profile.objects.create(user=user)
         if profile_type == 'mentor':
-            MentorProfile.objects.create(user=user)
-        else:
-            EntrepreneurProfile.objects.create(user=user)
-        return user
+            profile.is_mentor = True
+            profile.save()
+        return profile
 
     def clean_confirm_password(self):
         password = self.cleaned_data['password']
@@ -93,22 +94,57 @@ class ProfileForm(forms.ModelForm):
                                                              "required": ""}))
     city = forms.CharField(max_length=30,
                                 widget=forms.TextInput(attrs={"class": "form-control",
-                                                              "placeholder": "Last name",
+                                                              "placeholder": "City",
                                                               "required": ""}))
     state = forms.CharField(max_length=30,
                                 widget=forms.TextInput(attrs={"class": "form-control",
-                                                              "placeholder": "Last name",
+                                                              "placeholder": "State",
                                                               "required": ""}))
     country = forms.ChoiceField(widget=forms.Select(attrs={"class": "form-control",
                                                            "required": ""}),
                                 choices=COUNTRY_CHOICES)
-    about_me = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3}))
+    about_me = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+                               help_text="About yourself to know more!")
     industry = forms.ModelMultipleChoiceField(queryset=Industry.objects.all(),
                                               widget=forms.SelectMultiple(attrs={"class": "form-control",
-                                                                                 "required": ""}))
+                                                                                 "required": "",
+                                                                                 "data-placeholder": "Select Industry"}),
+                                              help_text='Your industry!')
     languages_spoken = forms.ModelMultipleChoiceField(queryset=Languages.objects.all(),
                                                widget=forms.SelectMultiple(attrs={"class": "form-control",
-                                                                                  }))
+                                                                                  "data-placeholder": "Select Language"}),
+                                                      help_text='Speak, Write and Read languages!')
+    postal_code = forms.CharField(max_length=6,
+                              widget=forms.TextInput(attrs={"class": "form-control",
+                                                            "placeholder": "",
+                                                            "required": ""}))
+    phone_number = forms.CharField(max_length=20,
+                              widget=forms.TextInput(attrs={"class": "form-control",
+                                                            "placeholder": "",
+                                                            }),
+                               help_text='123-456-7890 x123')
+    company = forms.CharField(max_length=100,
+                                   widget=forms.TextInput(attrs={"class": "form-control",
+                                                                 "placeholder": "",
+                                                                 }))
+    company_role = forms.CharField(max_length=30,
+                                widget=forms.TextInput(attrs={"class": "form-control",
+                                                              "placeholder": "Role...",
+                                                              }))
+    management_experience = forms.IntegerField(widget=forms.TextInput(attrs={"class": "form-control",
+                                                                 "placeholder": "",
+                                                                            }))
+    ownership_experience = forms.IntegerField(widget=forms.TextInput(attrs={"class": "form-control",
+                                                                              "placeholder": "",
+                                                                             }))
+    website = forms.URLField(widget=forms.TextInput(attrs={"class": "form-control",
+                                                                 "placeholder": "",
+                                                                 }),
+                             help_text="This could be your website, or alternately the address of your portfolio, professional bio, blog, or LinkedIn profile.")
+    gender = forms.ChoiceField(widget=forms.Select(attrs={"class": "form-control"}),
+                                choices=GENDER_CHOICES)
+    birth_year = forms.ChoiceField(widget=forms.Select(attrs={"class": "form-control"}),
+                               choices=BIRTH_YEAR_CHOICES)
     photo = forms.ImageField(widget=forms.FileInput(attrs={"width": 98,
                                                            "height": 98}),
                              required=False)
@@ -119,18 +155,25 @@ class ProfileForm(forms.ModelForm):
             self.fields['first_name'].initial = kwargs['instance'].user.first_name
             self.fields['last_name'].initial = kwargs['instance'].user.last_name
 
+    class Meta:
+        model = Profile
+        exclude = ('user', )
+
 class EntrepreneurProfileEditForm(ProfileForm):
     professional_experience = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3}))
-    class Meta:
+    need_help = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3, "required":""}),
+                                required=False)
+
+    """class Meta:
         model = EntrepreneurProfile
-        exclude = ('user',)
+        exclude = ('user',)"""
 
 class MentorProfileEditForm(ProfileForm):
     professional_experience = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3}))
 
-    class Meta:
+    """class Meta:
         model = MentorProfile
-        exclude = ('user',)
+        exclude = ('user',)"""
 
 class ExperienceForm(forms.ModelForm):
     name = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control width-200 d-i-b ver-align-m",

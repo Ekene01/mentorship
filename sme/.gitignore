@@ -1,3 +1,6 @@
 *.pyc
 */.idea
 *local_settings.py
+.idea/workspace.xml
+.idea/vcs.xml
+.idea/misc.xml

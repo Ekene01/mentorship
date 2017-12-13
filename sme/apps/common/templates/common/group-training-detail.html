@@ -42,49 +42,45 @@
 					<div class="panel panel-default contentbg b-ra-0">
 						<div class="panel-heading">MY CONVERSATIONS</div>
 						<div class="panel-body bg-white">
-							<div class="row">
-							<div class="border m-15 m-t-0 clearfix">
-								<div class="col-sm-2">
-									<img src="../assets/img/511535626.jpg" class="img-circle b-w-2 m-t-5" alt="Group-member-profile" width="98" height="98">
-								</div>
-								<div class="col-sm-3">
-										<h5 class="text-blue"> <b> Dharshan Suryavashi </b></h5>
-										<h5> 22-12-2017 </h5>
-										<h5> Entrepreneur</h5>
-								</div>
-								<div class="col-sm-5">
-										<h4 class="text-blue"> Hi Dharshan ,</h5>
-										<p class="text-ellipsis-l-3">
-									Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. VariousLorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various
-										</p>
-								</div>
-								<div class="col-sm-2">
-										<button type="button" class="btn btn-danger btn-block m-t-10"> View</button>
-								</div>
-							</div>
-						</div>
-							<div class="row">
-							<div class="border m-15 m-t-0 clearfix">
-								<div class="col-sm-2">
-									<img src="../assets/img/511535626.jpg" class="img-circle b-w-2 m-t-5" alt="Group-member-profile" width="98" height="98">
-								</div>
-								<div class="col-sm-3">
-										<h5 class="text-blue"> <b> Dharshan Suryavashi </b></h5>
-										<h5> 22-12-2017 </h5>
-										<h5> Entrepreneur</h5>
-								</div>
-								<div class="col-sm-5">
-										<h4 class="text-blue"> Hi Dharshan ,</h5>
-										<p class="text-ellipsis-l-3">
-									Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. VariousLorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various
-										</p>
-								</div>
-								<div class="col-sm-2">
-										<button type="button" class="btn btn-danger btn-block  m-t-10"> View</button>
-								</div>
-							</div>
-						</div>
-							<button type="button" class="btn btn-grey btn-block">View all Conversations</button>
+                            {% for message in messages %}
+                                <div class="row">
+                                    <div class="border m-15 m-t-0 clearfix">
+                                        <div class="col-sm-2">
+                                            <img src="{% if message.from_user_profile.photo %}{{ message.from_user_profile.photo.url }}{% else %}{% static 'img/no-photo.png' %}{% endif %}" class="img-circle b-w-2 m-t-5" alt="Group-member-profile" width="98" height="98"/>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <h5 class="text-blue"> <b> {{ message.from_user.get_full_name | title }} </b></h5>
+                                            <h5> {{ message.created_at|date:"d-m-Y" }} </h5>
+                                            <!--<h5> Entrepreneur</h5>-->
+                                        </div>
+                                        <div class="col-sm-5">
+                                            <!--<h4 class="text-blue"> Hi Dharshan ,</h5>-->
+                                            <p class="text-ellipsis-l-3">
+                                                {{ message.message }}
+                                            </p>
+                                        </div>
+                                        {% comment %}
+                                        <div class="col-sm-2">
+                                            <button type="button" class="btn btn-danger btn-block m-t-10"> View</button>
+                                        </div>
+                                        {% endcomment %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            <div class="row">
+                                <div class="border m-15 m-t-0 clearfix">
+                                    <div class="col-sm-2">
+                                        <img src="{% if current_user_profile.photo %}{{ current_user_profile.photo.url }}{% else %}{% static 'img/no-photo.png' %}{% endif %}" class="img-circle b-w-2 m-t-5" alt="Group-member-profile" width="98" height="98"/>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <!--<h4 class="text-blue"> Hi Dharshan ,</h5>-->
+                                        <textarea name="message"></textarea>
+                                        <div class="right">
+                                            <button type="button" class="btn btn-danger btn-block m-t-10">Post</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 						</div>
 					</div>
 				</div>

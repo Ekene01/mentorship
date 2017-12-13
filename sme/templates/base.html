@@ -55,9 +55,11 @@
 						{% if is_authenticated %}
 							<li><a href="{% url 'profile' %}">PROFILE</a></li>
 						{% endif %}
-						<li><a href="#">ABOUT</a></li>
-						<li><a href="#">CONTACT</a></li>
+						<li><a href="{% url 'search' whom='mentor' %}">Find Mentors</a></li>
+						<li><a href="{% url 'search' whom='entrepreneur' %}">Find Entrepreneurs</a></li>
+						<li><a href="{% url 'search' whom='group' %}">Find Groups</a></li>
 					</ul>
+					{% comment %}
 					<form class="navbar-form navbar-left" role="search">
 						<div class="input-group">
 							<input type="text" class="form-control hide" placeholder="Search" name="srch-term" id="srch-term">
@@ -66,6 +68,7 @@
 							</div>
 						</div>
 					</form>
+					{% endcomment %}
 					<ul class="nav navbar-nav navbar-right">
 					{% if not is_authenticated %}
 						<li class=""><a href="{% url 'login' %}">Login</a></li>

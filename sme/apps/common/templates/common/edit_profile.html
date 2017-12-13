@@ -5,6 +5,7 @@
 {% block title %}Edit Profile{% endblock title %}
 
 {% block extra-css %}
+    <link rel="stylesheet" href="{% static 'css/chosen.css' %}" type="text/css">
 {% endblock extra-css %}
 
 {% block content %}
@@ -18,11 +19,6 @@
                 <div class="panel-body bg-theme">
                     <div class="panel-group m-b-0 edit-profile" id="accordion">
                         <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">Personal</a>
-                                </h4>
-                            </div>
                             <div id="collapse1" class="panel-collapse collapse in">
                                 <div class="panel-body">
                                     <div class="form-group">
@@ -71,15 +67,30 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
+                                        <label for="country" class="col-sm-4 control-label">Postal code</label>
+                                        <div class="col-sm-4">
+                                            {{ form.postal_code }}
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="country" class="col-sm-4 control-label">Phone number</label>
+                                        <div class="col-sm-4">
+                                            {{ form.phone_number }}
+                                            <span class="" style="color: #404040;">({{ form.phone_number.help_text }})</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
                                         <label for="country" class="col-sm-4 control-label">About me</label>
                                         <div class="col-sm-4">
                                             {{ form.about_me }}
+                                            <span class="" style="color: #404040;">({{ form.about_me.help_text }})</span>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="country" class="col-sm-4 control-label">Professional Experience</label>
                                         <div class="col-sm-4">
                                             {{ form.professional_experience }}
+                                            <span class="" style="color: #404040;">(What roles have you played in your career and how did you contribute? What experiences would you like to share in a mentoring connection? What accomplishments are you proud of?)</span>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -94,6 +105,57 @@
                                             {{ form.languages_spoken }}
                                         </div>
                                     </div>
+
+                                    <div class="form-group">
+                                        <label for="Photo" class="col-sm-4 control-label">How many years of business management experience do you have?﻿*</label>
+                                        <div class="col-sm-4">
+                                            {{ form.management_experience }}
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="Photo" class="col-sm-4 control-label">How many years of ownership experience do you have?﻿*</label>
+                                        <div class="col-sm-4">
+                                            {{ form.ownership_experience }}
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="Photo" class="col-sm-4 control-label">Your company</label>
+                                        <div class="col-sm-4">
+                                            {{ form.company }}
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="Photo" class="col-sm-4 control-label">Your role at this company</label>
+                                        <div class="col-sm-4">
+                                            {{ form.company_role }}
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="Photo" class="col-sm-4 control-label">Website</label>
+                                        <div class="col-sm-4">
+                                            {{ form.website }}
+                                            <span class="" style="color: #404040;">({{ form.website.help_text }})</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="Photo" class="col-sm-4 control-label">Gender</label>
+                                        <div class="col-sm-4">
+                                            {{ form.gender }}
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="Photo" class="col-sm-4 control-label">Birth Year</label>
+                                        <div class="col-sm-4">
+                                            {{ form.birth_year }}
+                                        </div>
+                                    </div>
+
                                     {% comment %}
                                     <div class="form-group m-b-0 last">
                                         <div class="col-sm-2 col-sm-offset-4">
@@ -116,6 +178,7 @@
                             </div>
                         </div>
 
+                        {% comment %}
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <h4 class="panel-title">
@@ -186,6 +249,7 @@
                                 </div>
                             </div>
                         </div>
+                        {% endcomment %}
 
                     </div><!--/#accordion .panel-group-->
                 </div>
@@ -205,6 +269,15 @@
 {% endblock content %}
 
 {% block extra-js %}
+    <script src="{% static 'js/chosen.jquery.js' %}"></script>
+
+    <script>
+
+        $("#id_industry, #id_languages_spoken").chosen();
+
+
+    </script>
+
     <script type="text/javascript">
         //Header Search open/close
         function showSearchbox() {

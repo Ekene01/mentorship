@@ -66,25 +66,23 @@
                             {% endwith %}
                             {% with err=form.profile_type.errors %}
                             <div class="form-group{% if err %} has-error{% endif %}">
-                                <label for="id_profile_type" class="col-sm-4 control-label">
-                                        I am </label>
-                                <div class="col-sm-8">
-                                    {{ form.profile_type }}
-                                    <span class="text-danger">{{ err.0 }}</span>
+                                <div class="col-md-offset-4 col-sm-3">
+                                    <div class="">
+                                        <input type="radio" name="profile_type" value="mentor">
+                                        <label for="id_profile_type" class="control-label">
+                                        Be a mentor</label>
+                                    </div>
                                 </div>
+                                <div class="col-sm-5">
+                                    <div class="">
+                                        <input type="radio" name="profile_type" value="entrepreneur">
+                                        <label for="id_profile_type" class="control-label">
+                                        Be an Entrepreneur</label>
+                                    </div>
+                                </div>
+                                <div class="text-danger" style="text-align: center;">{{ err.0 }}</div>
                             </div>
                             {% endwith %}
-                            <div class="form-group">
-                                <div class="col-sm-offset-4 col-sm-8">
-                                        <div class="checkbox">
-                                                <label>
-                                                        <input type="checkbox" name="agree-terms">
-                                                        Agree to terms and conditions
-                                                </label>
-                                                <div class="text-danger agree-terms" style="display: none;">Please agree to terms</div>
-                                        </div>
-                                </div>
-                            </div>
                             <div class="form-group last">
                                 <div class="col-sm-offset-4 col-sm-6">
                                         <button type="submit" class="btn btn-success btn-block">
@@ -104,19 +102,3 @@
     </div>
     <!-- Register form end-->
 {% endblock content %}
-
-{% block extra-js %}
-    <script type="text/javascript">
-        $(function() {
-            $("#register-form").submit(function(event) {
-                var agree_terms = $('input[name=agree-terms]:checked').length;
-                if (!agree_terms) {
-                    $('.agree-terms').show();
-                    return false;
-                }
-                return true;
-
-            });
-        });
-    </script>
-{% endblock extra-js %}

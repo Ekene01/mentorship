@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Agree Terms{% endblock title %}
+
+{% block extra-css %}
+    <style type="text/css">
+        .m-t-50 {
+            margin-top: 0px !important;
+        }
+        .agree-terms-block h3 {color: #2B547E;}
+        .agree-terms-block h4 {color: #737CA1;}
+    </style>
+{% endblock extra-css %}
+
+{% block content %}
+    <div class="container">
+        {% if messages %}
+	      {% for message in messages %}
+	        <div class="top-msg-blk fade in alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>
+	          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+	          {{ message }}
+	        </div>
+	      {% endfor %}
+      {% endif %}
+        <form action="." method="post" name="agree_terms_form" id="agree-terms-form">
+            <div class="row p-t-20">
+                <div class="form-group">
+                    <div class="col-sm-offset-4 col-sm-5 agree-terms-block" style="background-color:#ffffff;">
+                        {% if user_type == 'entreprenuer' %}
+                            <div>
+                                <h3>Expectations of Entreprenuer</h3>
+                                <p>
+                                    We are so appreciative that you will be voluntering with us to help entrepreneurs succeed!
+                                </p>
+                            </div>
+                            <div>
+                                <h4>No Soliciting</h4>
+                                <p>Mentoring is non-monetary.</p>
+                            </div>
+                        {% else %}
+                            <div>
+                                <h3>Community Expectations</h3>
+                                <p>
+                                    Mentors are volunteering their time to help you. In return we ask that you follow our community expectations.
+                                </p>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4>A detailed profile</h4>
+                                    <p>Please write a good description of your busiiness.</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h4>Follow through</h4>
+                                    <p>You should be currently dedicating time and effort to your business.</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4>No Soliciting</h4>
+                                    <p>Mentors are her to support and guidance.</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h4>Drive the process</h4>
+                                    <p>You should be the one to send the first message and drive the mentoring conversation.</p>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="checkbox">
+                                <label>
+                                        <input type="checkbox" name="agree-terms">
+                                        I agree to terms and conditions
+                                </label>
+                                <div class="text-danger agree-terms" style="display: none;">Please agree to terms</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12 col-sm-12">
+
+                </div>
+                <!-right section Start->
+                <div class="col-md-12 col-sm-12">
+                    <div class="row btn-sec p-t-15">
+                        <div class="col-md-2 col-md-offset-5 p-b-15">
+                            <form action="." method="post" name="join-form">{% csrf_token %}
+                                <input type="hidden" name="group" value="{{ object.id }}" />
+                                <button class="btn btn-danger btn-block" type="submit">
+                                    Save &amp; Continue
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-/right section End->
+            </div>
+        </form>
+    </div>
+
+    <!-- Page section end-->
+{% endblock content %}
+
+{% block extra-js %}
+    <script type="text/javascript">
+        $(function() {
+            $("#agree-terms-form").submit(function(event) {
+                var agree_terms = $('input[name=agree-terms]:checked').length;
+                if (!agree_terms) {
+                    $('.agree-terms').show();
+                    return false;
+                }
+                return true;
+
+            });
+        });
+    </script>
+{% endblock extra-js %}

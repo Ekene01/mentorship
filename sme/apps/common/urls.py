@@ -3,7 +3,7 @@ from django.contrib.auth.views import LogoutView
 
 from .views import (SigninView, SignupView, ProfileView,
                     EditProfileView, ConversationView, SearchView,
-                    AddGroupView, GroupDetailView)
+                    AddGroupView, GroupDetailView, AgreeTermsView)
 
 urlpatterns = [
     url(r'^$', ProfileView.as_view(), name='home'),
@@ -18,5 +18,7 @@ urlpatterns = [
     url(r'^search/(?P<whom>\w+)/$', SearchView.as_view(), name='search'),
     url(r'^add/group/$', AddGroupView.as_view(), name='add-group'),
     url(r'^group/detail/(?P<pk>\d+)/$', GroupDetailView.as_view(), name='group-detail'),
+    url(r'^agree/terms/$', AgreeTermsView.as_view(), name='agree-terms'),
+
     #url(r'^join/group/?P<pk>\d+)/$', JoinGroupView.as_view(), name='group-join'),
 ]
