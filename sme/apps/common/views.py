@@ -26,6 +26,11 @@ from .models import EntrepreneurProfile, MentorProfile, Experience, Course, Prof
 from apps.utils import get_object_or_None, send_mail_html, get_base_url
 from apps.decorators import agree_terms_required
 
+MENTOR_PROFILE_NAME = 'mentor'
+ENTREPRENUER_PROFILE_NAME = 'entreprenuer'
+PROFILE_MAP = {MENTOR_PROFILE_NAME: MENTOR_PROFILE_NAME,
+               ENTREPRENUER_PROFILE_NAME: ENTREPRENUER_PROFILE_NAME}
+
 def get_profile(kwargs):
     print(kwargs)
     try:
@@ -77,7 +82,7 @@ class AgreeTermsView(View):
         profile.agree_terms = True
         profile.save()
         print(profile.id, "PROFILE ID")
-        return HttpResponseRedirect(reverse('edit-profile', kwargs={'pk': profile.id}))
+        return HttpResponseRedirect(reverse('profile'))
 
 class ProfileView(TemplateView):
     template_name = 'common/profile.html'
@@ -89,11 +94,13 @@ class ProfileView(TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(ProfileView, self).get_context_data(*args, **kwargs)
-        profile = Profile.objects.get(user__id=self.request.user.id)
+        profile = get_profile({'user__id': self.request.user.id})
+        print(profile.agree_terms, "AGEREEE")
         context.update(profile=profile,
-                       profile_id=profile.id)
+                       profile_id=profile.id,
+                       profile_type=PROFILE_MAP[MENTOR_PROFILE_NAME] if profile.is_mentor else \
+                                                                        PROFILE_MAP[ENTREPRENUER_PROFILE_NAME])
         return context
-
 
 def EditProfileView1(request, pk):
     template_name = 'common/edit_profile.html'
@@ -130,36 +137,102 @@ class EditProfileView(FormView):
     def get_context_data(self, *args, **kwargs):
         context = super(EditProfileView, self).get_context_data(*args, **kwargs)
         #initial = self.initial
-        pk = self.kwargs['pk']
+        #pk = self.kwargs['pk']
         is_mentor = True
-        profile = Profile.objects.get(id=pk)
+        profile = get_profile({'user__id':self.request.user.id})
 
         #experience_formset = modelformset_factory(Experience, form=ExperienceForm, extra=1)
         #experience_formset = experience_formset(queryset=profile.experience.all())
         #print(experience_formset, "EF")
-        context.update(pk=self.kwargs['pk'])
+        context.update(profile_type=self.kwargs['profile_type'],
+                       user_type='mentor' if profile.is_mentor else 'entreprenuer')
                        #experience_formset=experience_formset)
         return context
 
+    def get_initial(self):
+        print("INITIAL")
+        profile = get_profile({'user__id':self.request.user.id})
+        mentor = profile.mentor
+        entreprenuer = profile.entreprenuer
+        initial_dict = {}
+        profile_type = self.kwargs['profile_type']
+
+        if profile_type == MENTOR_PROFILE_NAME:
+            if mentor:
+                mentor_attributes = ['management_experience', 'ownership_experience', 'business_experience_country',
+                                     'website', 'company', 'company_role', 'professional_experience']
+                initial_dict.update(industry=entreprenuer.industry.all(),
+                                    expert_areas=entreprenuer.expert_areas.all())
+                for i in mentor_attributes:
+                    initial_dict.update({i: mentor.getattribute(i)})
+        elif profile_type == ENTREPRENUER_PROFILE_NAME:
+            if entreprenuer:
+                ent_attributes = ['experience', 'professional_experience', 'need_help']
+                initial_dict.update(industry=entreprenuer.industry.all(),
+                                    expert_areas=entreprenuer.expert_areas.all())
+                for i in ent_attributes:
+                    initial_dict.update({i: entreprenuer.__getattribute__(i)})
+        print(initial_dict)
+        return  initial_dict
+
+
     def get_form(self):
         print(self.form_class)
-        pk = self.kwargs['pk']
-        instance = Profile.objects.get(id=pk)
-        profile = Profile.objects.get(id=self.kwargs['pk'])
-        if profile.is_mentor:
+        #instance = Profile.objects.get(id=pk)
+        profile_type = self.kwargs['profile_type']
+        profile = get_profile({'user__id': self.request.user.id})
+        if profile_type == MENTOR_PROFILE_NAME:
             form_class = MentorProfileEditForm
         else:
             form_class = EntrepreneurProfileEditForm
-        return form_class(instance=instance, **self.get_form_kwargs())
+        return form_class(instance=profile, **self.get_form_kwargs())
 
     def form_valid(self, form):
         print(self.request.POST, self.request.FILES)
+        data = form.cleaned_data
         first_name = form.cleaned_data['first_name'].title()
         last_name = form.cleaned_data['last_name'].title()
-        form = form.save()
+        form = form.save(commit=False)
         form.user.first_name = first_name
         form.user.last_name = last_name
         form.user.save()
+        profile = get_profile({'user__id': self.request.user.id})
+        print(data)
+        profile_type = self.kwargs['profile_type']
+        if profile_type == MENTOR_PROFILE_NAME:
+            if not profile.mentor:
+                mentor = MentorProfile(professional_experience=data['professional_experience'],
+                              management_experience=data['management_experience'],
+                              ownership_experience=data['ownership_experience'],
+                              business_experience_country=data['business_experience_country'],
+                              website=data['website'],
+                              company=data['company'],
+                              company_role=data['company_role'])
+                mentor.save()
+                profile.mentor = mentor
+                profile.save()
+            else:
+                mentor = profile.mentor
+                mentor.professional_experience = data['professional_experience']
+                mentor.management_experience = data['management_experience']
+                mentor.ownership_experience = data['ownership_experience']
+                mentor.business_experience_country = data['business_experience_country']
+                mentor.website = data['website']
+                mentor.company = data['company']
+                mentor.company_role = data['company_role']
+                mentor.save()
+        elif not profile.entreprenuer:
+            ent = EntrepreneurProfile(professional_experience=data['professional_experience'],
+                                        need_help=data['need_help'])
+            ent.save()
+            profile.entreprenuer = ent
+            profile.save()
+        else:
+            ent = profile.entreprenuer
+            ent.professional_experience = data['professional_experience']
+            ent.industry = data['industry']
+            ent.need_help = data['need_help']
+            ent.save()
         return HttpResponseRedirect(reverse('profile'))
 
     """def form_invalid(self, form):
@@ -293,3 +366,26 @@ class TrainingDetailView(DetailView):
                        messages=self.object.messages.all().order_by('id'))
         print(context, self.object.owner_id, current_user.id, current_user.id)
         return context
+
+class CreateCourseView(FormView):
+    template_name = 'create_course.html'
+
+    #@method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(CreateCourseView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(CreateCourseView, self).get_context_data(*args, **kwargs)
+        return context
+
+    def form_valid(self, form):
+        new_course = form.save(commit=False)
+        new_course.save()
+        messages.success(self.request, "You have created the course successfully!")
+        return HttpResponseRedirect(reverse('course-list'))
+
+class CourseListingView(View):
+    template_name = 'course_listing.html'
+
+    def get(self, request, * args, **kwargs):
+        return render(self.template_name)

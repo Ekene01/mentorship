@@ -10,7 +10,7 @@
 
 {% block content %}
     <div class="container">
-        <form action="{% url 'edit-profile' pk=pk %}" method="post" class="form-horizontal" role="form" enctype="multipart/form-data">{% csrf_token %}
+        <form action="." method="post" class="form-horizontal" role="form" enctype="multipart/form-data">{% csrf_token %}
             {{ form.errors }}
             <div class="panel panel-default m-t-15">
                 <div class="panel-heading">
@@ -87,60 +87,90 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="country" class="col-sm-4 control-label">Professional Experience</label>
+                                        <label for="id_professional_experience" class="col-sm-4 control-label">Professional Experience</label>
                                         <div class="col-sm-4">
                                             {{ form.professional_experience }}
-                                            <span class="" style="color: #404040;">(What roles have you played in your career and how did you contribute? What experiences would you like to share in a mentoring connection? What accomplishments are you proud of?)</span>
+                                            <span class="" style="color: #404040;">{{ form.professional_experience.help_text }}</span>
                                         </div>
                                     </div>
-                                    <div class="form-group">
+                                    {% with err=form.industry.errors %}
+                                    <div class="form-group{% if err %} has-error{% endif %}">
                                         <label for="id_industry" class="col-sm-4 control-label">Industry</label>
                                         <div class="col-sm-4">
                                             {{ form.industry }}
+                                            <span class="text-danger">{{ err.0 }}</span>
                                         </div>
                                     </div>
+                                    {% endwith %}
                                     <div class="form-group">
                                         <label for="Photo" class="col-sm-4 control-label">Languages</label>
                                         <div class="col-sm-4">
                                             {{ form.languages_spoken }}
                                         </div>
                                     </div>
-
-                                    <div class="form-group">
-                                        <label for="Photo" class="col-sm-4 control-label">How many years of business management experience do you have?﻿*</label>
-                                        <div class="col-sm-4">
-                                            {{ form.management_experience }}
+                                    {% if user_type == 'mentor' %}
+                                        <div class="form-group">
+                                            <label for="Photo" class="col-sm-4 control-label">How many years of business management experience do you have?﻿*</label>
+                                            <div class="col-sm-4">
+                                                {{ form.management_experience }}
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="form-group">
-                                        <label for="Photo" class="col-sm-4 control-label">How many years of ownership experience do you have?﻿*</label>
-                                        <div class="col-sm-4">
-                                            {{ form.ownership_experience }}
+                                        <div class="form-group">
+                                            <label for="Photo" class="col-sm-4 control-label">How many years of ownership experience do you have?﻿*</label>
+                                            <div class="col-sm-4">
+                                                {{ form.ownership_experience }}
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="form-group">
-                                        <label for="Photo" class="col-sm-4 control-label">Your company</label>
-                                        <div class="col-sm-4">
-                                            {{ form.company }}
+                                        <div class="form-group">
+                                            <label for="Photo" class="col-sm-4 control-label">Your company</label>
+                                            <div class="col-sm-4">
+                                                {{ form.company }}
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="form-group">
-                                        <label for="Photo" class="col-sm-4 control-label">Your role at this company</label>
-                                        <div class="col-sm-4">
-                                            {{ form.company_role }}
+                                        <div class="form-group">
+                                            <label for="Photo" class="col-sm-4 control-label">Your role at this company</label>
+                                            <div class="col-sm-4">
+                                                {{ form.company_role }}
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="form-group">
-                                        <label for="Photo" class="col-sm-4 control-label">Website</label>
-                                        <div class="col-sm-4">
-                                            {{ form.website }}
-                                            <span class="" style="color: #404040;">({{ form.website.help_text }})</span>
+                                        <div class="form-group">
+                                            <label for="Photo" class="col-sm-4 control-label">Website</label>
+                                            <div class="col-sm-4">
+                                                {{ form.website }}
+                                                <span class="" style="color: #404040;">({{ form.website.help_text }})</span>
+                                            </div>
                                         </div>
-                                    </div>
+                                        {% comment %}
+                                        <div class="form-group m-b-0 last">
+                                            <div class="col-sm-2 col-sm-offset-4">
+                                                <label class="btn-bs-file btn btn-primary">
+                                                    Change Photo
+                                                    <input type="file" id="change-photo" name="change-photo" />
+                                                </label>
+                                            </div>
+                                            <div class="col-sm-6 text-right">
+                                                <button type="submit" class="btn btn-success">
+                                                    Save &amp; Continue
+                                                </button>
+                                                <button type="reset" class="btn btn-danger">
+                                                    Reset
+                                                </button>
+                                            </div>
+                                        </div>
+                                        {% endcomment %}
+                                    {% else %}
+                                        <div class="form-group">
+                                            <label for="id_need_help" class="col-sm-4 control-label">Need help</label>
+                                            <div class="col-sm-4">
+                                                {{ form.need_help }}
+                                                <span class="" style="color: #404040;">{{ form.need_help.help_text }}</span>
+                                            </div>
+                                        </div>
+                                    {% endif %}
 
                                     <div class="form-group">
                                         <label for="Photo" class="col-sm-4 control-label">Gender</label>
@@ -155,101 +185,10 @@
                                             {{ form.birth_year }}
                                         </div>
                                     </div>
-
-                                    {% comment %}
-                                    <div class="form-group m-b-0 last">
-                                        <div class="col-sm-2 col-sm-offset-4">
-                                            <label class="btn-bs-file btn btn-primary">
-                                                Change Photo
-                                                <input type="file" id="change-photo" name="change-photo" />
-                                            </label>
-                                        </div>
-                                        <div class="col-sm-6 text-right">
-                                            <button type="submit" class="btn btn-success">
-                                                Save &amp; Continue
-                                            </button>
-                                            <button type="reset" class="btn btn-danger">
-                                                Reset
-                                            </button>
-                                        </div>
-                                    </div>
-                                    {% endcomment %}
                                 </div>
                             </div>
                         </div>
 
-                        {% comment %}
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">Experience</a>
-                                    </h4>
-                            </div>
-                            <div id="collapse2" class="panel-collapse collapse">
-                                <div class="panel-body">
-                                    <div id="clone-sections">
-                                        {{ experience_formset.management_form }}
-                                        {% for expr_form in experience_formset %}
-                                            <div class="section m-b-15">
-                                                <div class="form-group clearfix">
-                                                    <label for="experience-name" class="col-sm-4 control-label">Name</label>
-                                                    {{ expr_form.name }}
-                                                </div>
-                                                <div class="form-group clearfix">
-                                                    <label for="experience-month" class="col-sm-4 control-label">Start Month</label>
-                                                    {{ expr_form.start_month }}
-                                                </div>
-                                                <div class="form-group clearfix">
-                                                    <label for="experience-year" class="col-sm-4 control-label">Start Year</label>
-                                                    {{ expr_form.start_year }}
-                                                </div>
-                                                <div class="form-group clearfix">
-                                                    <label for="experience-year" class="col-sm-4 control-label">End month</label>
-                                                    {{ expr_form.end_month }}
-                                                </div>
-                                                <div class="form-group clearfix">
-                                                    <label for="experience-year" class="col-sm-4 control-label">End Year</label>
-                                                    {{ expr_form.end_year }}
-                                                </div>
-                                                <div class="form-group clearfix">
-                                                    <label for="experience-year" class="col-sm-4 control-label">Indunstry</label>
-                                                    {{ expr_form.industry }}
-                                                </div>
-                                                <div class="form-group clearfix">
-                                                    <label for="experience-name" class="col-sm-4 control-label">URL</label>
-                                                    {{ expr_form.url }}
-                                                </div>
-                                                <div class="form-group clearfix d-b">
-                                                    <div class="col-sm-2 col-sm-offset-4 p-l-0">
-                                                        <button type="button" class="remove btn btn-danger">Remove Experience</button>
-                                                        <button class="btn btn-success">Save</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        {% endfor %}
-
-                                    </div><!--/#clone-sections (cloned inside section)-->
-                                    <div class="form-group last">
-                                        <div class="col-sm-2 col-sm-offset-4">
-                                            <button type="button" class="btn btn-success addsection">
-                                                Add Another Section
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="form-group m-b-0 last">
-                                        <div class="col-sm-12 text-right">
-                                            <button type="submit" class="btn btn-success">
-                                                Save &amp; Continue
-                                            </button>
-                                            <button type="reset" class="btn btn-danger">
-                                                Reset
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {% endcomment %}
 
                     </div><!--/#accordion .panel-group-->
                 </div>

@@ -23,10 +23,15 @@ GENDER_CHOICES = [
     ('n', "I'd prefer not to share")
 ]
 
+COURSE_CATEGORY_CHOICES = [
+    ('', '-- Select --'),
+    ('running-business', 'Running business')
+]
+
 cur_year = datetime.today().year
 BIRTH_YEAR_CHOICES = [('', 'Select'),
                       ('n', "I'd prefer not to share")]
-[BIRTH_YEAR_CHOICES.append(('%s' % y, y)) for y in range(cur_year - 15, cur_year - 80)]
+[BIRTH_YEAR_CHOICES.append((str(y), y)) for y in reversed(range(cur_year - 80, cur_year - 15))]
 
 class BaseExtraProfile(models.Model):
     experience = models.ManyToManyField('Experience', blank=True, related_name="experience_%(class)ss")
@@ -39,7 +44,7 @@ class BaseExtraProfile(models.Model):
 
 class EntrepreneurProfile(BaseExtraProfile):
     need_help = models.TextField(blank=True, null=True)
-    pass
+    #pass
 
 class MentorProfile(BaseExtraProfile):
     management_experience = models.IntegerField(blank=True)
@@ -213,3 +218,20 @@ class Videos(models.Model):
 class Files(models.Model):
     file = models.FileField(upload_to="uploads/course/files/%y/%m/%d")
     created_at = models.DateTimeField(auto_now_add=True)
+
+class Course(models.Model):
+    name = models.CharField(max_length=200)
+    category = models.CharField(max_length=50, choices=COURSE_CATEGORY_CHOICES)
+    image = models.ImageField(upload_to='course/images/%y/%m/%d', blank=True, null=True)
+    description = models.TextField()
+    rating = models.IntegerField(blank=True, null=True)
+    amount = models.DecimalField(max_digits=10, max_decimal_places=2)
+    instructor = models.ManyToManyField(Profile, blank=True)
+    created_by = models.ForeignKey(User)
+    create_at = models.DateTimeField(auto_now_add=True)
+
+
+    def __str__(self):
+        return "%s" % (self.name)
+
+

@@ -123,24 +123,6 @@ class ProfileForm(forms.ModelForm):
                                                             "placeholder": "",
                                                             }),
                                help_text='123-456-7890 x123')
-    company = forms.CharField(max_length=100,
-                                   widget=forms.TextInput(attrs={"class": "form-control",
-                                                                 "placeholder": "",
-                                                                 }))
-    company_role = forms.CharField(max_length=30,
-                                widget=forms.TextInput(attrs={"class": "form-control",
-                                                              "placeholder": "Role...",
-                                                              }))
-    management_experience = forms.IntegerField(widget=forms.TextInput(attrs={"class": "form-control",
-                                                                 "placeholder": "",
-                                                                            }))
-    ownership_experience = forms.IntegerField(widget=forms.TextInput(attrs={"class": "form-control",
-                                                                              "placeholder": "",
-                                                                             }))
-    website = forms.URLField(widget=forms.TextInput(attrs={"class": "form-control",
-                                                                 "placeholder": "",
-                                                                 }),
-                             help_text="This could be your website, or alternately the address of your portfolio, professional bio, blog, or LinkedIn profile.")
     gender = forms.ChoiceField(widget=forms.Select(attrs={"class": "form-control"}),
                                 choices=GENDER_CHOICES)
     birth_year = forms.ChoiceField(widget=forms.Select(attrs={"class": "form-control"}),
@@ -148,6 +130,7 @@ class ProfileForm(forms.ModelForm):
     photo = forms.ImageField(widget=forms.FileInput(attrs={"width": 98,
                                                            "height": 98}),
                              required=False)
+    #professional_experience = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3}))
 
     def __init__(self, *args, **kwargs):
         super(ProfileForm, self).__init__(*args, **kwargs)
@@ -157,19 +140,36 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        exclude = ('user', )
+        exclude = ('user', 'agree_terms')
 
 class EntrepreneurProfileEditForm(ProfileForm):
     professional_experience = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3}))
     need_help = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3, "required":""}),
-                                required=False)
+                                required=False,
+                                help_text='(What do you need to know?)')
 
     """class Meta:
         model = EntrepreneurProfile
         exclude = ('user',)"""
 
 class MentorProfileEditForm(ProfileForm):
-    professional_experience = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3}))
+    professional_experience = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+                                              help_text='(What roles have you played in your career and how did you contribute? What experiences would you like to share in a mentoring connection? What accomplishments are you proud of?)')
+    business_experience_country = forms.ChoiceField(widget=forms.Select(attrs={"class": "form-control width-200 d-i-b ver-align-m"}),
+                                                    choices=COUNTRY_CHOICES)
+    company = forms.CharField(max_length=100,
+                              widget=forms.TextInput(attrs={"class": "form-control",
+                                                            "placeholder": ""}))
+    company_role = forms.CharField(max_length=30,
+                                   widget=forms.TextInput(attrs={"class": "form-control",
+                                                                 "placeholder": "Role..."}))
+    management_experience = forms.IntegerField(widget=forms.TextInput(attrs={"class": "form-control",
+                                                                             "placeholder": ""}))
+    ownership_experience = forms.IntegerField(widget=forms.TextInput(attrs={"class": "form-control",
+                                                                            "placeholder": ""}))
+    website = forms.URLField(widget=forms.TextInput(attrs={"class": "form-control",
+                                                           "placeholder": ""}),
+                             help_text="This could be your website, or alternately the address of your portfolio, professional bio, blog, or LinkedIn profile.")
 
     """class Meta:
         model = MentorProfile
