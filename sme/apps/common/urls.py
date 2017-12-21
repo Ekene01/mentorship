@@ -4,7 +4,8 @@ from django.contrib.auth.views import LogoutView
 from .views import (SigninView, SignupView, ProfileView,
                     EditProfileView, ConversationView, SearchView,
                     AddGroupView, GroupDetailView, AgreeTermsView,
-                    CreateCourseView. CourseListingView)
+                    CreateCourseView, CourseListingView, CourseDetailView,
+                    CoursePayView)
 
 urlpatterns = [
     url(r'^$', ProfileView.as_view(), name='home'),
@@ -21,7 +22,9 @@ urlpatterns = [
     url(r'^group/detail/(?P<pk>\d+)/$', GroupDetailView.as_view(), name='group-detail'),
     url(r'^agree/terms/$', AgreeTermsView.as_view(), name='agree-terms'),
     url(r'^create/course/$', CreateCourseView.as_view(), name='create-course'),
-    url(r'^course/list/$', CourseListingView.as_view(), name='course-listing')
+    url(r'^course/list/$', CourseListingView.as_view(), name='course-listing'),
+    url(r'^course/detail/(?P<pk>\d+)/$', CourseDetailView.as_view(), name='course-detail'),
+    url(r'^course/(?P<pk>\d+)/pay/$', CoursePayView.as_view(), name='pay-course'),
 
     #url(r'^join/group/?P<pk>\d+)/$', JoinGroupView.as_view(), name='group-join'),
 ]

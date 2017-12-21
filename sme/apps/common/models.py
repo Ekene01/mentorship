@@ -28,10 +28,31 @@ COURSE_CATEGORY_CHOICES = [
     ('running-business', 'Running business')
 ]
 
+GROUP_MESSAGE = 'group'
+
+MESSAGE_TYPE_CHOICES = [
+    ('', '-- Select --'),
+    (GROUP_MESSAGE, GROUP_MESSAGE.title())
+]
+
 cur_year = datetime.today().year
 BIRTH_YEAR_CHOICES = [('', 'Select'),
                       ('n', "I'd prefer not to share")]
 [BIRTH_YEAR_CHOICES.append((str(y), y)) for y in reversed(range(cur_year - 80, cur_year - 15))]
+
+PAYMENT_STATUS_CHOICES = [
+    ('', 'Select'),
+    ('success', 'Success'),
+    ('failed', 'Failed'),
+    ('timeout', 'Timeout'),
+    ('invalid', 'Invalid'),
+    ('auth', 'Auth')
+]
+
+GROUP_STATUS_CHOICES = [
+    ('open', 'Open'),
+    ('closed', 'Closed')
+]
 
 class BaseExtraProfile(models.Model):
     experience = models.ManyToManyField('Experience', blank=True, related_name="experience_%(class)ss")
@@ -88,8 +109,6 @@ class Profile(models.Model):
             result.append(self.country.title())
         return ", ".join(result)
 
-    #class Meta:
-    #    abstract = True
 
 class Industry(models.Model):
     #profile = models.ForeignKey(Profile)
@@ -127,10 +146,12 @@ class Languages(models.Model):
 
 class Conversation(models.Model):
     from_user = models.ForeignKey(User, related_name='from_user')
-    to_user = models.ForeignKey(User, related_name='to_user')
+    to_user = models.ForeignKey(User, related_name='to_user', blank=True, null=True)
     message = models.TextField()
     is_read = models.BooleanField(default=False)
     parent = models.ForeignKey('self', blank=True, null=True)
+    message_type = models.CharField(max_length=10, choices=MESSAGE_TYPE_CHOICES, default='')
+    files = models.ManyToManyField('Files', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     @property
@@ -175,7 +196,8 @@ class CourseGroupIntermediate(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return "%s - %s" % self.course, self.group"""
+        return "%s - %s" % self.course, self.group
+"""
 
 class Certificates(models.Model):
     name = models.CharField(max_length=50)
@@ -183,24 +205,28 @@ class Certificates(models.Model):
     def __str__(self):
         return "%s" % (self.name)
 
-class Course(models.Model):
-    owner = models.ForeignKey(User, related_name='course_owner')
+class Group(models.Model):
+    owner = models.ForeignKey(Profile)
     title = models.CharField(max_length=150)
+    industry = models.ManyToManyField(Industry, blank=True)
     description = models.TextField()
-    logo = models.ImageField(upload_to='uploads/course/logos/%y/%m/%d', blank=True, null=True)
-    #joiners = models.ManyToManyField(EntrepreneurProfile, blank=True)
-    #members = models.ManyToManyField(User, through='CourseMemberIntermediate')
-    #groups = models.ManyToManyField('CourseGroup', through='CourseGroupIntermediate')
-    members = models.ManyToManyField(User, blank=True, related_name='course_members')
-    messages = models.ManyToManyField('Conversation', blank=True)
+    logo = models.ImageField(upload_to='uploads/group/logos/%y/%m/%d', blank=True, null=True)
+    members = models.ManyToManyField(Profile, blank=True, related_name='group_members')
+    messages = models.ManyToManyField('Conversation', through='GroupConversationIntermediate', blank=True)
     videos = models.ManyToManyField('Videos', blank=True)
     files = models.ManyToManyField('Files', blank=True)
-    is_group = models.BooleanField(default=False)
     #awarded_certificates = models.ManyToManyField('Certificates', blank=True)
+    created_by = models.ForeignKey(User)
+    status = models.CharField(max_length=15, choices=GROUP_STATUS_CHOICES, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return "%s - %s" % (self.title, self.owner)
+        return "%s - %s" % (self.title, self.created_by)
+
+class GroupConversationIntermediate(models.Model):
+    group = models.ForeignKey(Group)
+    conversation = models.ForeignKey(Conversation)
+    is_question = models.BooleanField(default=False)
 
 """class Training(models.Model):
     course = models.ForeignKey(Course)
@@ -211,6 +237,34 @@ class UserTraining(models.Model):
     user = models.ForeignKey(User)
     awarded_certificates = models.ManyToManyField('Certificates')"""
 
+class CourseInstructor(models.Model):
+    profile = models.ForeignKey(Profile)
+    joined_at = models.DateTimeField(auto_now_add=True)
+
+class Course(models.Model):
+    name = models.CharField(max_length=200)
+    category = models.CharField(max_length=50, choices=COURSE_CATEGORY_CHOICES)
+    image = models.ImageField(upload_to='course/images/%y/%m/%d', blank=True, null=True)
+    description = models.TextField()
+    rating = models.IntegerField(blank=True, null=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    instructor = models.ManyToManyField(Profile, through='CourseInstructorProfile', blank=True)
+    teacher = models.ManyToManyField(Profile, related_name='course_teachers')
+    videos = models.ManyToManyField('Videos', blank=True, related_name='course_videos')
+    files = models.ManyToManyField('Files', blank=True, related_name='course_files')
+    created_by = models.ForeignKey(User)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return "%s" % (self.name)
+
+class CourseInstructorProfile(models.Model):
+    profile = models.ForeignKey(Profile)
+    course = models.ForeignKey(Course)
+    joined_at = models.DateTimeField(auto_now_add=True)
+
+#class Payment(models.Model):
+
 class Videos(models.Model):
     video = models.FileField(upload_to="uploads/course/video/%y/%m/%d")
     created_at = models.DateTimeField(auto_now_add=True)
@@ -219,19 +273,15 @@ class Files(models.Model):
     file = models.FileField(upload_to="uploads/course/files/%y/%m/%d")
     created_at = models.DateTimeField(auto_now_add=True)
 
-class Course(models.Model):
-    name = models.CharField(max_length=200)
-    category = models.CharField(max_length=50, choices=COURSE_CATEGORY_CHOICES)
-    image = models.ImageField(upload_to='course/images/%y/%m/%d', blank=True, null=True)
-    description = models.TextField()
-    rating = models.IntegerField(blank=True, null=True)
-    amount = models.DecimalField(max_digits=10, max_decimal_places=2)
-    instructor = models.ManyToManyField(Profile, blank=True)
-    created_by = models.ForeignKey(User)
-    create_at = models.DateTimeField(auto_now_add=True)
-
+class Payment(models.Model):
+    reference = models.CharField(max_length=250, blank=True, null=True)
+    status = models.CharField(max_length=20, choices=PAYMENT_STATUS_CHOICES, default='')
+    reason = models.TextField(blank=True)
+    course = models.ForeignKey(Course)
+    buyer = models.ForeignKey(Profile)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return "%s" % (self.name)
+        return "%s by %s" % (self.course, self.buyer)
 
 

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import requests
 
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.views import LoginView
@@ -16,13 +17,15 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.contrib.auth import authenticate, login
+from django.conf import settings
 
 
 # Local imports
 #from .signals import new_profile
 from .forms import (RegistrationForm, MentorProfileEditForm, EntrepreneurProfileEditForm, ExperienceForm,
                     ConversationForm, SearchForm, CourseForm)
-from .models import EntrepreneurProfile, MentorProfile, Experience, Course, Profile
+from .models import (EntrepreneurProfile, MentorProfile, Experience, Course, Profile, Group, Conversation,
+                     GroupConversationIntermediate, Payment, GROUP_MESSAGE)
 from apps.utils import get_object_or_None, send_mail_html, get_base_url
 from apps.decorators import agree_terms_required
 
@@ -290,7 +293,7 @@ class SearchView(View):
             self.template_name = 'common/search_profile.html'
             #print(self.template_name)
         if self.kwargs['whom'] == 'group':
-            results = Course.objects.all()
+            results = Group.objects.all()
             if 'keywords' in get_dict and get_dict['keywords']:
                 results = results.filter(Q(title__icontains=get_dict['keywords']) | Q(description__icontains=get_dict['keywords']))
         elif self.kwargs['whom'] == 'mentor':
@@ -323,7 +326,7 @@ class AddGroupView(FormView):
         return HttpResponseRedirect(reverse('profile'))
 
 class GroupDetailView(UpdateView):
-    model = Course
+    model = Group
     template_name = 'common/group-detail.html'
     fields = ('id',)
 
@@ -334,9 +337,10 @@ class GroupDetailView(UpdateView):
     def get_context_data(self, *args, **kwargs):
         context = super(GroupDetailView, self).get_context_data(*args, **kwargs)
         current_user = self.request.user
-        if self.object.members.filter(id=current_user.id).exists():
+        #profile = get_profile({'user__id': current_user.id})
+        if self.object.members.filter(user__id=current_user.id).exists():
             context.update(is_joined=True)
-        if self.object.owner_id == current_user.id:
+        if self.object.created_by.id == current_user.id:
             context.update(is_owner=True)
         print(context, self.object.owner_id,current_user.id, current_user.id )
         return context
@@ -344,7 +348,8 @@ class GroupDetailView(UpdateView):
     def post(self, *args, **kwargs):
         current_user = self.request.user
         #print(dir(self))
-        self.get_object().members.add(current_user)
+        member_profile = get_profile({'user__id': current_user.id})
+        self.get_object().members.add(member_profile)
         #self.object.save()
         #print(self.request.user)
         messages.success(self.request, "You have joined this group successfully!")
@@ -385,7 +390,90 @@ class CreateCourseView(FormView):
         return HttpResponseRedirect(reverse('course-list'))
 
 class CourseListingView(View):
-    template_name = 'course_listing.html'
+    template_name = 'common/course_listing.html'
 
     def get(self, request, * args, **kwargs):
-        return render(self.template_name)
+        context = {}
+        courses = Course.objects.all()
+        teachers = {}
+        profiles = Profile.objects.filter(course_teachers__isnull=False)
+        for i in profiles:
+            name = '%s %s' %(i.user.first_name.title(), i.user.last_name.title())
+            if name not in teachers:
+                teachers[name] = 1
+            else:
+                teachers[name] += 1
+        context.update(courses=courses,
+                       techers=teachers)
+        return render(self.request, self.template_name, context)
+
+
+class AddGroupConversation(View):
+
+    def post(self, request, *args, **kwargs):
+        group_id = self.kwargs['group']
+        group = Group.objects.get(id=group_id)
+        members = group.memebers.all()
+        data = self.request.POST
+        print(data)
+
+        conversation = Conversation(sender=request.user,
+                                    message=data['message'],
+                                    message_type=GROUP_MESSAGE)
+        conversation.save()
+        group_conversation = GroupConversationIntermediate(conversation=conversation,
+                                      group=group)
+        if 'is_question' in data:
+            group_conversation.is_question = True
+        group_conversation.save()
+
+        return JsonResponse({'result': 'success'})
+
+class CourseDetailView(View):
+    template_name = 'common/course-detail.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(CourseDetailView, self).dispatch(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        object = Course.objects.get(id=self.kwargs['pk'])
+        context = {'object': object}
+        return render(self.request, self.template_name, context)
+
+    """def post(self, *args, **kwargs):
+        current_user = self.request.user
+        #print(dir(self))
+        member_profile = get_profile({'user__id': current_user.id})
+        self.get_object().members.add(member_profile)
+        #self.object.save()
+        #print(self.request.user)
+        messages.success(self.request, "You have joined this group successfully!")
+        return HttpResponseRedirect(reverse('group-detail', kwargs={'pk': self.kwargs['pk']}))"""
+
+class CoursePayView(View):
+    template_name = 'common/payment.html'
+
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(CoursePayView, self).dispatch(*args, **kwargs)
+
+
+    def get(self, request, *args, **kwargs):
+        course = Course.objects.get(id=self.kwargs['pk'])
+        context = {'course': course}
+        return render(self.request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        response = requests.get("%s%s" %(settings.PAYSTACK_API_URL, self.request.POST['reference']), headers={'Authorization' : 'Bearer %s' % settings.PAYSTACK_API_SECRET_KEY})
+        response = response.json()
+        if response['status']:
+            payment = Payment(buyer=get_profile({'user__id': self.request.user.id}),
+                              course=Course.objects.get(id=self.kwargs['pk']),
+                              reference=self.request.POST['reference'],
+                              status=response['data']['status'],
+                              reason=response['message'])
+            payment.save()
+            messages.success(self.request, "Your amount has been successfully transferred!")
+        return JsonResponse({'result': 'success'})

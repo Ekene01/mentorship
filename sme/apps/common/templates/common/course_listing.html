@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Course Listing{% endblock title %}
+
+{% block content %}
+    <div class="f-s-24 h1 m-0 p-t-30 p-b-15 p-l-15 bg-white">Courses</div>
+    <div class="container-fluid">
+        <!--/HighlightBoxes End-->
+        <div class="row highlight-boxes">
+            <div class="width-20p green-bg bg-overlay pull-left">
+                <div class="text-center">
+                  <img src="../assets/img/startup.png" alt="startup_img">
+                    <div class="p-t-15">Starting A Business</div>
+                </div>
+            </div>
+            <div class="width-20p red-bg bg-overlay pull-left">
+                <div class="text-center">
+                  <img src="../assets/img/contract.png" alt="contract_img">
+                  <div class="p-t-15">Running A Business</div>
+                </div>
+            </div>
+
+            <div class="width-20p blue-bg bg-overlay pull-left">
+                <div class="text-center">
+                  <img src="../assets/img/growth.png" alt="growth_img">
+                    <div class="p-t-15">Growing A Business</div>
+                </div>
+            </div>
+
+            <div class="width-20p purple-bg bg-overlay pull-left">
+                <div class="text-center">
+                  <img src="../assets/img/business-people-meeting.png" alt="business-people-meeting_img">
+                    <div class="p-t-15">Workshops &amp; Seminars</div>
+                </div>
+            </div>
+
+            <div class="width-20p yellow-bg bg-overlay  pull-left">
+                <div class="text-center">
+                  <img src="../assets/img/meeting.png" alt="meeting_img">
+                    <div class="p-t-15">Interviews</div>
+                </div>
+            </div>
+        </div>
+        <!--/HighlightBoxes End-->
+    </div>
+
+    <div class="container">
+        <div class="row m-t-30">
+            <div class="col-md-3 col-sm-4 filter-sec">
+                <div class="top-whole-search search-box p-b-15">
+                    <input type="search" class="form-control bg-grey-light" />
+                    <i class="fa fa-search text-muted"></i>
+                </div>
+
+                <div class="teachers-filter p-t-15 p-b-15">
+                    <div class="header clearfix">
+                        <span class="panel-title f-w-600">Teacher</span>
+                        <i class="expand" data-toggle="collapse" data-target="#teacher-panel" aria-controls="teacher-panel"></i>
+                    </div>
+                    <div id="teacher-panel" class="teacher-panel p-t-15 collapse in">
+                        <div class="search-box">
+                            <input type="search" class="form-control bg-grey-light" />
+                            <i class="fa fa-search text-muted"></i>
+                        </div>
+                        {% for teacher, count in teachers.iteritems %}
+                        <div class="checkbox">
+                            <label class="f-w-600" for="id-{{ teacher }}">
+                                <input type="checkbox" name="teacher" id="id-{{ teacher }}"> {{ teacher }} (<span>{{ count }}</span>)
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="discount-filter p-t-10 p-b-15">
+                    <div class="header clearfix">
+                        <span class="panel-title f-w-600">Discount</span>
+                        <i class="expand" data-toggle="collapse" data-target="#discount-panel" aria-controls="discount-panel"></i>
+                    </div>
+                    <div id="discount-panel" class="discount-panel p-t-15 collapse in">
+                        <div class="search-box">
+                            <input type="search" class="form-control bg-grey-light" />
+                            <i class="fa fa-search text-muted"></i>
+                        </div>
+                        <div class="checkbox">
+                            <label class="f-w-600">
+                                <input type="checkbox"> 50% off or More
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label class="f-w-600">
+                                <input type="checkbox"> 30% off or More
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label class="f-w-600">
+                                <input type="checkbox"> 10% off or More
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rating-filter p-t-10 p-b-15">
+                    <div class="header clearfix">
+                        <span class="panel-title f-w-600">Rating</span>
+                        <i class="expand" data-toggle="collapse" data-target="#rating-panel" aria-controls="rating-panel"></i>
+                    </div>
+                    <div id="rating-panel" class="rating-panel p-t-15 collapse in">
+                        <div class="search-box">
+                            <input type="search" class="form-control bg-grey-light" />
+                            <i class="fa fa-search text-muted"></i>
+                        </div>
+                        <div class="checkbox">
+                            <label class="p-l-0 f-w-600">
+                                <i class="fa fa-star text-yellow"></i>
+                                <i class="fa fa-star text-yellow"></i>
+                                <i class="fa fa-star text-yellow"></i>
+                                <i class="fa fa-star text-yellow"></i>
+                                <i class="fa fa-star text-gray"></i>
+                                &amp; Up (<span>3</span>)
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label class="p-l-0 f-w-600">
+                                <i class="fa fa-star text-yellow"></i>
+                                <i class="fa fa-star text-yellow"></i>
+                                <i class="fa fa-star text-yellow"></i>
+                                <i class="fa fa-star text-gray"></i>
+                                <i class="fa fa-star text-gray"></i>
+                                &amp; Up (<span>2</span>)
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label class="p-l-0 f-w-600">
+                                <i class="fa fa-star text-yellow"></i>
+                                <i class="fa fa-star text-yellow"></i>
+                                <i class="fa fa-star text-gray"></i>
+                                <i class="fa fa-star text-gray"></i>
+                                <i class="fa fa-star text-gray"></i>
+                                &amp; Up (<span>2</span>)
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label class="p-l-0 f-w-600">
+                                <i class="fa fa-star text-yellow"></i>
+                                <i class="fa fa-star text-gray"></i>
+                                <i class="fa fa-star text-gray"></i>
+                                <i class="fa fa-star text-gray"></i>
+                                <i class="fa fa-star text-gray"></i>
+                                &amp; Up (<span>2</span>)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-9 col-sm-8">
+            <!--/ Filter result boxes Begain-->
+                <div class="row">
+                    {% for course in courses %}
+                        <div class="col-md-4 col-sm-6">
+                          <div class="course-box bg-white contentbg m-b-15">
+                                {% if course.image %}<img src="{{ course.image.url }}" class="img-responsive center-block" alt="Course_img">{% endif %}
+                                <div class="p-20 p-b-10">
+                                    <a href="{% url 'course-detail' pk=course.id %}"><h3 class="m-t-0">{{ course.name }}</h3></a>
+                                    <p class="f-s-16 text-muted"><i class="fa fa-map-marker"></i> {{ course.category }}</p>
+                                    <p class="p-t-15 f-s-14 text-muted">
+                                        {{ course.description|truncatewords:"5" }}
+                                    </p>
+                                </div>
+                                <div class="clearfix border-top-1 p-15">
+                                    <div class="pull-left">
+                                        <i class="fa fa-star text-gray"></i>
+                                        <i class="fa fa-star text-gray"></i>
+                                        <i class="fa fa-star text-gray"></i>
+                                        <i class="fa fa-star text-gray"></i>
+                                        <i class="fa fa-star text-gray"></i>
+                                    </div>
+                                    <div class="pull-right">
+                                        {{ course.amount }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <!--/ Filter result boxes End-->
+            </div>
+        </div><!--/.row-->
+    </div><!--/.container-->
+{% endblock content %}

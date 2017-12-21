@@ -1,4 +1,9 @@
 /*Custom style for all pages*/
+/*Dashboard.html CSS*/
+.dashboard .conversations {
+	max-height: 336px;
+	overflow-y: auto;
+}
 /*conversations.html CSS*/
 .conversations .user-detail .ribbon {
 	top: -10px;
@@ -136,4 +141,80 @@
 }
 #clone-sections .section {
 	border-bottom: 1px solid #bdbdbd;
+}
+
+/* Course page*/
+
+.highlight-boxes .bg-overlay {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    color: #fff;
+    height: 300px;
+    padding-top: 100px;
+}
+.green-bg.bg-overlay {
+	background-image: linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.4)), url("../img/computer-2982270_640.jpg");
+}
+.red-bg.bg-overlay {
+	background-image: linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.4)), url("../img/money-2696229_640.jpg");
+}
+.blue-bg.bg-overlay {
+	background-image: linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.4)), url("../img/coins-948603_640.jpg");
+}
+.purple-bg.bg-overlay {
+	background-image: linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.4)), url("../img/startup-593344_640.jpg");
+}
+.yellow-bg.bg-overlay {
+	background-image: linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.4)), url("../img/cup-2752105_640.jpg");
+}
+.green-bg.bg-overlay:hover {
+	background-color: #21bb37;
+	background-image: initial;
+	transition: 'background-color, background-image' 0.2s liner;
+}
+.red-bg.bg-overlay:hover {
+	background-color: #fe0000;
+	background-image: initial;
+}
+.blue-bg.bg-overlay:hover {
+	background-color: #1e1884;
+	background-image: initial;
+}
+.purple-bg.bg-overlay:hover {
+	background-color: #920391;
+	background-image: initial;
+}
+.yellow-bg.bg-overlay:hover {
+	background-color: #e2ea1b;
+	background-image: initial;
+}
+.filter-sec .search-box {
+	position: relative;
+}
+.search-box .fa-search {
+	position: absolute;
+    right: 10px;
+    top: 7px;
+    font-size: 18px;
+}
+.filter-sec .header .expand {
+	display: inline-block;
+	width: 22px;
+	height: 22px;
+	float: right;
+	text-align: center;
+    padding-top: 3px;
+	font: normal normal normal 18px/1 FontAwesome;
+	font-size: 18px;
+	color: #777777;
+	cursor: pointer;
+	transition: all 1s ease-out;
+}
+.filter-sec .header .expand:before {
+	content: "\f068";
+}
+.filter-sec .header .expand.collapsed:before {
+	content: "\f067";
+	transition: all 1s ease-out;
 }

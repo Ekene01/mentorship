@@ -8,7 +8,7 @@ from datetime import date
 
 from .models import (Profile, EntrepreneurProfile, MentorProfile,
                      Industry, Languages, Experience,
-                     Conversation, Course, COUNTRY_CHOICES, GENDER_CHOICES,
+                     Conversation, Course, Group, COUNTRY_CHOICES, GENDER_CHOICES,
                      BIRTH_YEAR_CHOICES)
 
 PROFILE_TYPE_CHOICES = [
@@ -232,3 +232,9 @@ class CourseForm(forms.ModelForm):
     class Meta:
         model = Course
         exclude = ('owner', )
+
+class GroupForm(forms.ModelForm):
+
+    class Meta:
+        model = Group
+        exclude = ('created_by', )

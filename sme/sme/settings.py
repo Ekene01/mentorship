@@ -140,6 +140,10 @@ LOGOUT_REDIRECT_URL = '/login/'
 # Email settings
 DEFAULT_FROM_EMAIL = 'help@smehelp'
 
+PAYSTACK_API_URL = 'https://api.paystack.co/transaction/verify/'
+# Change this to live key
+PAYSTACK_API_SECRET_KEY = 'sk_test_429c1c722206c8ee1490c6d1a45f433e4f9b4ec4'
+
 try:
     from local_settings import *
 except ImportError:

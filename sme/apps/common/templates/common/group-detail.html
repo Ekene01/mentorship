@@ -30,7 +30,7 @@
                             <div class="row">
                                     {% if object.logo %}
                                     <div class="col-lg-4 col-sm-12 text-center-sm">
-                                            <img src="{{ object.logo.url }}" class="img-circle b-w-2" alt="profile-icon-female" width="98" height="98">
+                                        <img src="{{ object.logo.url }}" class="img-circle b-w-2" alt="profile-icon-female" width="98" height="98">
                                     </div>
                                     {% endif %}
                                     <div class="col-lg-8 col-sm-12">
@@ -67,6 +67,99 @@
                 </div>
                 {% endif %}
             </div>
+
+            <div class="col-md-12 col-sm-12">
+                <div class="panel panel-default contentbg b-ra-0 p-t-15 p-l-15 p-b-5 p-r-15 m-t-50">
+                    <div class="panel-heading bg-grey-light">
+                            <div class="row">
+                                <div class="col-lg-8 col-sm-12">
+                                    <h4 class="text-blue m-b-4">View Questions and Answers</h4>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="panel-body p-b-0 p-t-0">
+                        <div class="row bg-white">
+                            <div class="col-sm-12">
+                                <h4>Summary</h4>
+                                <!--<p>Human Resources &#187; Employee Training</p>-->
+                                <p>
+                                    {{ object.description }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 col-sm-12">
+                <div class="panel panel-default contentbg b-ra-0 p-t-15 p-l-15 p-b-5 p-r-15 m-t-50">
+                    <div class="panel-heading bg-grey-light">
+                            <div class="row">
+                                <div class="col-lg-8 col-sm-12">
+                                    <h4 class="text-blue m-b-4"> Group Mentors</h4>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="panel-body p-b-0 p-t-0">
+                        <div class="row bg-white">
+                            <div class="col-sm-12">
+                                <h4>Summary</h4>
+                                <!--<p>Human Resources &#187; Employee Training</p>-->
+                                <p>
+                                    {{ object.description }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 col-sm-12">
+                <div class="panel panel-default contentbg b-ra-0 p-t-15 p-l-15 p-b-5 p-r-15 m-t-50">
+                    <div class="panel-heading bg-grey-light">
+                            <div class="row">
+                                <div class="col-lg-8 col-sm-12">
+                                        <h4 class="text-blue m-b-4">Group Entreprenuers</h4>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="panel-body p-b-0 p-t-0">
+                        <div class="row bg-white">
+                            <div class="col-sm-12">
+                                <h4>Summary</h4>
+                                <!--<p>Human Resources &#187; Employee Training</p>-->
+                                <p>
+                                    {{ object.description }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 col-sm-12">
+                <div class="panel panel-default contentbg b-ra-0 p-t-15 p-l-15 p-b-5 p-r-15 m-t-50">
+                    <div class="panel-heading bg-grey-light">
+                            <div class="row">
+                                <div class="col-lg-8 col-sm-12">
+                                        <h4 class="text-blue m-b-4">View All Conversations</h4>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="panel-body p-b-0 p-t-0">
+                        <div class="row bg-white">
+                            <div class="col-sm-12">
+                                <h4>Summary</h4>
+                                <!--<p>Human Resources &#187; Employee Training</p>-->
+                                <p>
+                                    {{ object.description }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-/right section End->
             {% endwith %}
         </div>

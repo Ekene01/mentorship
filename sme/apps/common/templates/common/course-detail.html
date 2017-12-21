@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Course detail{% endblock title %}
+
+{% block extra-css %}
+    <style type="text/css">
+        .m-t-50 {
+            margin-top: 0px !important;
+        }
+    </style>
+{% endblock extra-css %}
+
+{% block content %}
+    <div class="container">
+        {% if messages %}
+	      {% for message in messages %}
+	        <div class="top-msg-blk fade in alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>
+	          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+	          {{ message }}
+	        </div>
+	      {% endfor %}
+      {% endif %}
+        <div class="row p-t-20">
+            <div class="col-md-12 col-sm-12">
+                <div class="panel panel-default contentbg b-ra-0 p-t-15 p-l-15 p-b-5 p-r-15 m-t-50">
+                    <div class="panel-heading bg-grey-light">
+                            <div class="row">
+                                    {% if object.image %}
+                                    <div class="col-lg-4 col-sm-12 text-center-sm">
+                                        <img src="{{ object.image.url }}" class="img-circle b-w-2" alt="profile-icon-female" width="98" height="98">
+                                    </div>
+                                    {% endif %}
+                                    <div class="col-lg-8 col-sm-12">
+                                            <h4 class="text-blue m-b-4"> {{ object.name | title }} </h4>
+                                    </div>
+                            </div>
+                    </div>
+                    <div class="panel-body p-b-0 p-t-0">
+                        <div class="row bg-white">
+                            <div class="col-sm-12">
+                                <h4>Summary</h4>
+                                <!--<p>Human Resources &#187; Employee Training</p>-->
+                                <p>
+                                    {{ object.description }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-right section Start->
+            <div class="col-md-12 col-sm-12">
+                <div class="row btn-sec p-t-15">
+                    <div class="col-md-2 col-md-offset-5 p-b-15">
+                        <a href="{% url 'pay-course' pk=object.id %}" class="btn btn-danger btn-block">
+                            Buy course
+
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-/right section End->
+        </div>
+    </div>
+
+    <!-- Page section end-->
+{% endblock content %}

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Payment{% endblock title %}
+
+{% block extra-css %}
+    <style>
+        iframe #test-mode-badge{display: none;}
+    </style>
+{% endblock extra-css %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="panel panel-default login">
+                    <div class="panel-heading">
+                        <strong class="panel-title">Payment</strong>
+                    </div>
+
+                    <div class="panel-body">{% csrf_token %}
+                        <div id="paystackEmbedContainer"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Register form end-->
+{% endblock content %}
+
+{% block extra-js %}
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+
+    <script>
+  PaystackPop.setup({
+   key: 'pk_test_7394a210a3d4d38a3e802e7ac3849832e92e95f9',
+   email: 'customer@email.com',
+   amount: 2,
+   container: 'paystackEmbedContainer',
+   callback: function(response){
+        console.log(response);
+        $.post(
+            '/course/{{ course.id }}/pay/',
+            'csrfmiddlewaretoken=' + $('input[name=csrfmiddlewaretoken]').val() + '&reference=' + response.reference,
+            function(output) {
+                window.location.href = '/course/detail/{{ course.id }}/';
+            },
+            'json'
+        )
+    },
+  });
+
+  $('#test-mode-badge').hide();
+</script>
+
+{% endblock extra-js %}
