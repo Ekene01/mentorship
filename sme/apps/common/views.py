@@ -88,7 +88,7 @@ class AgreeTermsView(View):
         return HttpResponseRedirect(reverse('profile'))
 
 class ProfileView(TemplateView):
-    template_name = 'common/profile.html'
+    #template_name = 'common/profile.html'
 
     @method_decorator(login_required)
     @method_decorator(agree_terms_required)
@@ -104,6 +104,12 @@ class ProfileView(TemplateView):
                        profile_type=PROFILE_MAP[MENTOR_PROFILE_NAME] if profile.is_mentor else \
                                                                         PROFILE_MAP[ENTREPRENUER_PROFILE_NAME])
         return context
+
+    def get_template_names(self, *ar, **kw):
+        template_name = profile = get_profile({'user__id': self.request.user.id})
+        template_name = 'common/mentor_profile.html' if profile.is_mentor else 'common/entreprenuer_profile.html'
+        return [template_name]
+
 
 def EditProfileView1(request, pk):
     template_name = 'common/edit_profile.html'
@@ -223,7 +229,8 @@ class EditProfileView(FormView):
                 mentor.website = data['website']
                 mentor.company = data['company']
                 mentor.company_role = data['company_role']
-                mentor.save()
+                profile.mentor = mentor
+                profile.mentor.save()
         elif not profile.entreprenuer:
             ent = EntrepreneurProfile(professional_experience=data['professional_experience'],
                                         need_help=data['need_help'])
@@ -298,10 +305,14 @@ class SearchView(View):
                 results = results.filter(Q(title__icontains=get_dict['keywords']) | Q(description__icontains=get_dict['keywords']))
         elif self.kwargs['whom'] == 'mentor':
             results = Profile.objects.filter(is_mentor=True)
+            if 'industry' in get_dict and get_dict['industry']:
+                results = results.filter(mentor__industry__name__icontains=get_dict['industry'])
         elif self.kwargs['whom'] == 'entrepreneur':
             results = Profile.objects.filter(is_mentor=False)
-        if 'industry' in get_dict and get_dict['industry']:
-            results = results.filter(industry__name__icontains=get_dict['industry'])
+            if 'industry' in get_dict and get_dict['industry']:
+                results = results.filter(entreprenuer__industry__name__icontains=get_dict['industry'])
+        #if 'industry' in get_dict and get_dict['industry']:
+        #    results = results.filter(industry__name__icontains=get_dict['industry'])
         if 'country' in get_dict and get_dict['country']:
             results = results.filter(country=get_dict['country'])
         if 'languages_spoken' in get_dict and get_dict['languages_spoken']:
@@ -394,17 +405,41 @@ class CourseListingView(View):
 
     def get(self, request, * args, **kwargs):
         context = {}
+        search_data = self.request.GET
         courses = Course.objects.all()
         teachers = {}
+        result = []
+        json_response = []
         profiles = Profile.objects.filter(course_teachers__isnull=False)
         for i in profiles:
-            name = '%s %s' %(i.user.first_name.title(), i.user.last_name.title())
+            name = '%s %s' % (i.user.first_name.title(), i.user.last_name.title())
             if name not in teachers:
                 teachers[name] = 1
             else:
                 teachers[name] += 1
+        if self.request.is_ajax():
+            if 'teacher' in search_data:
+                print(search_data['teacher'], "TE")
+                for t in search_data['teacher']:
+                    first_name, last_name = t.split(' ', 1) if t.find(' ') >= 0 else [t, '']
+                    course = courses.filter(teacher__user__first_name__icontains=first_name,
+                                            teacher__user__last_name__icontains=last_name).\
+                                             values_list('id', flat=True)
+                    result.extend(course)
+            courses = courses.filter(id__in=set(result))
+            for c in courses:
+                json_response.append({'image': c.image.url if c.image else '',
+                                      'description': c.description[:50],
+                                      'name': c.name,
+                                      'category': c.category,
+                                      'amount': c.amount,
+                                      'rating': c.rating})
+            print(courses, "COOO")
+            return JsonResponse({'result': json_response})
+
+        print(teachers, "TEACHERS")
         context.update(courses=courses,
-                       techers=teachers)
+                       teachers=teachers)
         return render(self.request, self.template_name, context)
 
 
@@ -431,10 +466,6 @@ class AddGroupConversation(View):
 
 class CourseDetailView(View):
     template_name = 'common/course-detail.html'
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(CourseDetailView, self).dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         object = Course.objects.get(id=self.kwargs['pk'])

@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Profile{% endblock title %}
+
+{% block extra-css %}
+    <style type="text/css">
+        .m-t-50 {
+            margin-top: 0px !important;
+        }
+    </style>
+{% endblock extra-css %}
+
+{% block content %}
+    <div class="container">
+        <div class="row p-t-20">
+            {% with profile_expertise=profile.exprtise_areas.all %}
+            {% with profile_industry=profile.industry.all %}
+            <div class="col-md-4 col-sm-8">
+                <div class="panel panel-default contentbg b-ra-0 p-l-5 p-r-15 p-b-5 m-t-50">
+                    <div class="panel-heading bg-grey-light">
+                            <div class="row">
+                                    <div class="col-lg-4 col-sm-12 text-center">
+                                         <img src="{% if profile.photo %}{{ profile.photo.url }}{% else %}{% static 'img/no-photo.png' %}{% endif %}" class="img-circle b-w-2" alt="profile-icon-female" width="98" height="98">
+                                    </div>
+                                    <div class="col-lg-8 col-sm-12">
+                                            <h4 class="text-blue m-b-4"> {{ user.get_full_name | title }} </h4>
+                                            {% if profile.location %}<p class="f-s-11"> <i class="fa fa-map-marker" aria-hidden="true"></i> {{ profile.location }} </p>{% endif %}
+                                    </div>
+                            </div>
+                    </div>
+                    <div class="panel-body p-b-0 p-t-0">
+                        <div class="row bg-rose">
+                            <div class="col-md-12 p-b-10">
+                                <h4> I Need help with </h4>
+                                <ul class="list-unstyled small">
+                                    {% for i in profile_expertise %}
+                                        <li> <i class="fa fa-bullhorn" aria-hidden="true"></i>  {{ i.name }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="row bg-white">
+                            <div class="col-sm-12">
+                                <div class="ribbon">
+                                    <span class="label label-info">Started in 2017</a>
+                                </div>
+                                <h4 class="text-blue">My Business</h4>
+                                <h5 class="f-w-600">MINT SEXTY</h3>
+                                    {% for i in profile_industry|slice:"1" %}
+                                        <p class="small"> <i class="fa fa-tag fa-rotate-90" aria-hidden="true"></i> {{ i.name }} </p>
+                                    {% endfor %}
+                                <p class="text-ellipsis">{% if profile.about_me %}{{ profile.about_me | truncatewords:10 }}{% endif %}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-danger">
+                            Connect
+                            <span class="bg-white rounded-corner p-2 p-l-3 arrow-circle"><i class="fa fa-arrow-right text-red f-s-11"></i></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-11">
+                        <a href="{% url 'edit-profile' profile_type=profile_type %}" class="btn btn-primary" title="Edit Profile">
+                          <i class="fa fa-pencil d-i-b" aria-hidden="true"></i>
+                          Edit Profile
+                        </a>
+                </div>
+            </div>
+            <!-/right section Start->
+            <div class="col-md-8 col-sm-12">
+                <div class="panel panel-default contentbg b-ra-0 p-0 p-l-5 p-r-5">
+                    <div class="panel-heading bg-grey-light">
+                            <div class="row">
+                                    <div class="col-sm-3 col-md-2">
+                                         <img src="../assets/img/profile-icon-female.png" class="img-circle center-block b-w-2" alt="profile-icon-female" width="76" height="76">
+                                    </div>
+                                    <div class="col-sm-9 col-md-10">
+                                            <h5 class="text-blue m-t-5 m-b-4"> {{ user.get_full_name | title }} </h5>
+                                            <ul class="list-unstyled small">
+                                                {% if profile.location %}<li><i class="fa fa-map-marker" aria-hidden="true"></i> {{ profile.location }} </li>{% endif %}
+                                                {% for i in profile_industry %}
+                                                  <li><i class="fa fa-tag fa-rotate-90" aria-hidden="true"></i> {{ i.name }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                            <div class="recent-activity p-t-4 p-b-4 border-top-1 border-bottom-1">
+                                                <span class="p-r-10">Recent Activity</span>
+                                                <img src="{% static 'img/commenting-icon32x32.png' %}" class="" alt="commenting-icon32x32" width="16" height="16">
+                                                <img src="{% static 'img/commenting-icon1-32x32.png' %}" class="" alt="commenting-icon1-32x32" width="16" height="16">
+                                                <img src="{% static 'img/commenting-icon1-32x32.png' %}" class="" alt="commenting-icon1-32x32" width="16" height="16">
+                                            </div>
+                                    </div>
+                            </div>
+                    </div>
+                    <div class="row btn-sec p-t-15">
+                        <div class="col-sm-6 p-b-15">
+                            <button type="button" class="btn btn-danger btn-block">
+                                Start a Conversation
+                                <span class="bg-white rounded-corner p-2 p-l-3 arrow-circle"><i class="fa fa-arrow-right text-red f-s-11"></i></span>
+                            </button>
+                        </div>
+                        <div class="col-sm-6 p-b-15">
+                            <button type="button" class="btn btn-grey btn-block">
+                                <i class="fa fa-share"></i>
+                                Refer {{ user.get_full_name | title }} to a Colleague
+                            </button>
+                        </div>
+                    </div>
+                    <div class="panel-body p-0">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">WHAT I NEED HELP WITH</div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-7">
+                                        <p>
+                                            {{ profile.need_help }}
+                                        </p>
+                                    </div>
+                                    <div class="col-md-5 ex-request">
+                                        <div class="text-white bg-info p-10 f-s-12">
+                                            <div>Expertise Requested</div>
+                                            <ul class="list-unstyled">
+                                                <li>
+                                                    {% for i in profile_expertise %}
+                                                        <span class="p-l-5 p-r-5">&#187;</span>{{ i.name }}
+                                                    {% endfor %}
+                                                </li>
+                                            </ul>
+                                            <hr />
+                                            <div>Experience</div>
+                                            <ul class="list-unstyled">
+                                                <li>
+                                                    {% for i in profile_industry %}
+                                                        <span class="p-l-5 p-r-5">&#187;</span>{{ i.name }}
+                                                    {% endfor %}
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-/right section End->
+            {% endwith %}
+            {% endwith %}
+        </div>
+    </div>
+{% endblock content %}

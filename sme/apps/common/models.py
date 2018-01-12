@@ -57,14 +57,15 @@ GROUP_STATUS_CHOICES = [
 class BaseExtraProfile(models.Model):
     experience = models.ManyToManyField('Experience', blank=True, related_name="experience_%(class)ss")
     professional_experience = models.TextField(blank=True, null=True, help_text="Explain about your professional experience!")
-    industry = models.ManyToManyField('Industry')
-    expert_areas = models.ManyToManyField('ExpertAreas', blank=True, related_name="expert_areas_%(class)ss")
+    industry = models.ManyToManyField('Industry', related_name='industry_%(class)ss')
+    expert_areas = models.ManyToManyField('Industry', blank=True, related_name="expert_areas_%(class)ss")
 
     class Meta:
         abstract= True
 
 class EntrepreneurProfile(BaseExtraProfile):
     need_help = models.TextField(blank=True, null=True)
+    expertise_areas = models.ManyToManyField('ExpertiseAreas', blank=True, related_name="expertise_areas_%(class)ss")
     #pass
 
 class MentorProfile(BaseExtraProfile):
@@ -119,6 +120,12 @@ class Industry(models.Model):
         return '%s' % self.name
 
 class ExpertAreas(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return '%s' % self.name
+
+class ExpertiseAreas(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self):

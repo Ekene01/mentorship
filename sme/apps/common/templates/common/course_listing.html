@@ -6,7 +6,6 @@
 
 {% block content %}
     <div class="f-s-24 h1 m-0 p-t-30 p-b-15 p-l-15 bg-white">Courses</div>
-    {% comment %}
     <div class="container-fluid">
         <!--/HighlightBoxes End-->
         <div class="row highlight-boxes">
@@ -46,31 +45,31 @@
         </div>
         <!--/HighlightBoxes End-->
     </div>
-    {% endcomment %}
 
     <div class="container">
         <div class="row m-t-30">
-            {% comment %}
             <div class="col-md-3 col-sm-4 filter-sec">
                 <div class="top-whole-search search-box p-b-15">
                     <input type="search" class="form-control bg-grey-light" />
                     <i class="fa fa-search text-muted"></i>
                 </div>
-
+                <form id="search-form">
                 <div class="teachers-filter p-t-15 p-b-15">
                     <div class="header clearfix">
                         <span class="panel-title f-w-600">Teacher</span>
                         <i class="expand" data-toggle="collapse" data-target="#teacher-panel" aria-controls="teacher-panel"></i>
                     </div>
                     <div id="teacher-panel" class="teacher-panel p-t-15 collapse in">
+                        {% comment %}
                         <div class="search-box">
                             <input type="search" class="form-control bg-grey-light" />
                             <i class="fa fa-search text-muted"></i>
                         </div>
-                        {% for teacher, count in teachers.iteritems %}
+                        {% endcomment %}
+                        {% for teacher, count in teachers.items %}
                         <div class="checkbox">
                             <label class="f-w-600" for="id-{{ teacher }}">
-                                <input type="checkbox" name="teacher" id="id-{{ teacher }}"> {{ teacher }} (<span>{{ count }}</span>)
+                                <input type="checkbox" name="teacher" id="id-{{ teacher }}" value="{{ teacher }}" onchange="search_course();"> {{ teacher }} (<span>{{ count }}</span>)
                             </label>
                         </div>
                         {% endfor %}
@@ -157,8 +156,8 @@
                         </div>
                     </div>
                 </div>
+                </form>
             </div>
-            {% endcomment %}
 
             <div class="col-md-9 col-sm-8">
             <!--/ Filter result boxes Begain-->
@@ -195,3 +194,18 @@
         </div><!--/.row-->
     </div><!--/.container-->
 {% endblock content %}
+
+{% block extra-js %}
+    <script type="text/javascript">
+        function search_course() {
+            console.log("Search Course!");
+            $.getJSON(
+                "{% url 'course-listing' %}",
+                $('#search-form').serialize(),
+                function(output) {
+                    console.log(output);
+                }
+            );
+        }
+    </script>
+{% endblock extra-js %}
