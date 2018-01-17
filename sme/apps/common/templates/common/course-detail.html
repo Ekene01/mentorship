@@ -54,10 +54,15 @@
             <div class="col-md-12 col-sm-12">
                 <div class="row btn-sec p-t-15">
                     <div class="col-md-2 col-md-offset-5 p-b-15">
-                        <a href="{% url 'pay-course' pk=object.id %}" class="btn btn-danger btn-block">
-                            Buy course
-
-                        </a>
+                        {% if is_purchased %}
+                            <button class="btn btn-danger btn-block">
+                                You already purchased!
+                            </button>
+                        {% else %}
+                            <a href="{% url 'pay-course' pk=object.id %}" class="btn btn-danger btn-block">
+                                Buy course
+                            </a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

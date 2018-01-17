@@ -1,0 +1,27 @@
+{% for course in courses %}
+    <div class="col-md-4 col-sm-6">
+      <div class="course-box bg-white contentbg m-b-15">
+            {% if course.image %}<img src="{{ course.image.url }}" class="img-responsive center-block" alt="Course_img">{% endif %}
+            <div class="p-20 p-b-10">
+                <a href="{% url 'course-detail' pk=course.id %}"><h3 class="m-t-0">{{ course.name }}</h3></a>
+                <p class="f-s-16 text-muted"><i class="fa fa-map-marker"></i> {{ course.category }}</p>
+                <p class="p-t-15 f-s-14 text-muted">
+                    {{ course.description|truncatewords:"5" }}
+                </p>
+            </div>
+            <div class="clearfix border-top-1 p-15">
+                <div class="pull-left">
+                    {% for i in course.rating_filled %}
+                        <i class="fa fa-star text-yellow"></i>
+                    {% endfor %}
+                    {% for i in course.rating_unfilled %}
+                        <i class="fa fa-star text-gray"></i>
+                    {% endfor %}
+                </div>
+                <div class="pull-right">
+                    {{ course.amount }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}

@@ -18,6 +18,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.contrib.auth import authenticate, login
 from django.conf import settings
+from django.template.loader import render_to_string
 
 
 # Local imports
@@ -417,24 +418,40 @@ class CourseListingView(View):
                 teachers[name] = 1
             else:
                 teachers[name] += 1
+
+        if ('category' in search_data and search_data['category']):
+            courses = courses.filter(category__icontains=search_data['category'])
+        print(search_data, "SEARCH DATA!", courses)
+
         if self.request.is_ajax():
             if 'teacher' in search_data:
-                print(search_data['teacher'], "TE")
-                for t in search_data['teacher']:
+                #print(search_data['teacher'], "TE")
+                for t in search_data.getlist('teacher'):
                     first_name, last_name = t.split(' ', 1) if t.find(' ') >= 0 else [t, '']
                     course = courses.filter(teacher__user__first_name__icontains=first_name,
                                             teacher__user__last_name__icontains=last_name).\
                                              values_list('id', flat=True)
                     result.extend(course)
+
             courses = courses.filter(id__in=set(result))
-            for c in courses:
-                json_response.append({'image': c.image.url if c.image else '',
-                                      'description': c.description[:50],
-                                      'name': c.name,
-                                      'category': c.category,
-                                      'amount': c.amount,
-                                      'rating': c.rating})
-            print(courses, "COOO")
+
+            if 'offer' in search_data:
+                for o in search_data.getlist('offer'):
+                    print(o, int(o), "OFFERWW")
+                    course = courses.filter(offer__gte=int(o)).values_list('id', flat=True)
+                    print(course, "OFFFER")
+                    result.extend(course)
+
+            courses = courses.filter(id__in=set(result))
+
+            if 'rating' in search_data:
+                rating = int(search_data['rating'])
+                #print(rating, "rating")
+                course = courses.filter(rating__gte=rating).values_list('id', flat=True)
+                result.extend(course)
+
+            courses = courses.filter(id__in=set(result))
+            json_response = render_to_string('common/includes/course_mid_listing.html', {'courses': courses})
             return JsonResponse({'result': json_response})
 
         print(teachers, "TEACHERS")
@@ -469,7 +486,11 @@ class CourseDetailView(View):
 
     def get(self, request, *args, **kwargs):
         object = Course.objects.get(id=self.kwargs['pk'])
-        context = {'object': object}
+        is_purchased = True if self.request.user.is_authenticated() and \
+                               Payment.objects.filter(buyer__user__id=self.request.user.id,
+                                                      course__id=self.kwargs['pk']).exists() else False
+        context = {'object': object,
+                   'is_purchased': is_purchased}
         return render(self.request, self.template_name, context)
 
     """def post(self, *args, **kwargs):

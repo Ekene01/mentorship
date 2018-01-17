@@ -25,7 +25,11 @@ GENDER_CHOICES = [
 
 COURSE_CATEGORY_CHOICES = [
     ('', '-- Select --'),
-    ('running-business', 'Running business')
+    ('running-business', 'Running a business'),
+    ('starting-business', 'Starting a Business'),
+    ('growing-business', 'Growing a business'),
+    ('workshops-seminars', 'Workshops & Seminars'),
+    ('interviews', 'Interviews'),
 ]
 
 GROUP_MESSAGE = 'group'
@@ -253,7 +257,8 @@ class Course(models.Model):
     category = models.CharField(max_length=50, choices=COURSE_CATEGORY_CHOICES)
     image = models.ImageField(upload_to='course/images/%y/%m/%d', blank=True, null=True)
     description = models.TextField()
-    rating = models.IntegerField(blank=True, null=True)
+    rating = models.IntegerField(blank=True, null=True, default=0)
+    offer = models.IntegerField(blank=True, null=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     instructor = models.ManyToManyField(Profile, through='CourseInstructorProfile', blank=True)
     teacher = models.ManyToManyField(Profile, related_name='course_teachers')
@@ -264,6 +269,16 @@ class Course(models.Model):
 
     def __str__(self):
         return "%s" % (self.name)
+
+    @property
+    def rating_filled(self):
+        filled = 0 if not self.rating else self.rating
+        return range(filled)
+
+    @property
+    def rating_unfilled(self):
+        filled = 0 if not self.rating else self.rating
+        return range(5 - filled)
 
 class CourseInstructorProfile(models.Model):
     profile = models.ForeignKey(Profile)
