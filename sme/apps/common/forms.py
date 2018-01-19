@@ -140,7 +140,7 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        exclude = ('user', 'agree_terms')
+        exclude = ('user', 'agree_terms', 'is_mentor')
 
 class EntrepreneurProfileEditForm(ProfileForm):
     professional_experience = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3}))
@@ -211,7 +211,7 @@ class ConversationForm(forms.ModelForm):
 
     class Meta:
         model = Conversation
-        exclude = ('created_at', 'from_user', 'to_user')
+        exclude = ('created_at', 'from_user', 'to_user', 'message_type')
 
 class SearchForm(forms.Form):
     industry = forms.ChoiceField(widget=forms.Select(attrs={"class": "form-control"}),

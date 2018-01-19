@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Conversation{% endblock title %}
+
+{% block extra-css %}
+	<style>
+    .inner-comments
+    {
+      margin-top: 20px;
+      background-color: #f5f4f4 !important;
+      /* border: 1px solid transparent; */
+      border-radius: 1px !important;
+      box-shadow: 0 0px 0px rgba(0,0,0,.05) !important;
+      overflow-y:auto !important;
+      height:200px;
+    }
+    .inner-img{padding-top:15px !important;}
+    </style>
+{% endblock extra-css %}
+
+{% block content %}
+
+    <div class="f-s-22 f-w-600 h1 m-0 p-15 bg-white">Dashboard</div>
+		<div class="container std-profile">
+              {% if messages %}
+                  {% for message in messages %}
+                    <div class="top-msg-blk fade in alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>
+                      <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                      {{ message }}
+                    </div>
+                  {% endfor %}
+              {% endif %}
+			<div class="row p-t-25">
+				<div class="col-md-5">
+					<div class="panel panel-default m-b-30">
+						<div class="panel-heading bg-white clearfix">
+							<h4 class="panel-title f-w-600 pull-left">Group</h4>
+							<span class="f-w-600 text-gray pull-right h4 m-0">&hellip;</span>
+						</div>
+						<div class="panel-body">
+							<div class="row text-center-xs">
+                                {% if group.logo %}
+                                    <div class="col-lg-3 col-sm-2 col-md-4 text-center">
+                                         <img src="{{ group.logo.url }}" class="img-circle profile-photo box-shadow1" alt="profile-icon-female" width="98" height="98">
+                                    </div>
+                                {% endif %}
+								<div class="col-lg-9 col-sm-10 col-md-8">
+                                    <h4 class="m-b-4 f-w-600"> {{ group.title | title }} </h4>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+				<!-right section Start->
+				<div class="col-md-7">
+					<div class="panel panel-default contentbg b-ra-0">
+						<div class="panel-heading bg-white clearfix">
+							<h4 class="panel-title f-w-600 pull-left">Conversations</h4>
+							<span class="f-w-600 text-gray pull-right h4 m-0">&hellip;</span>
+						</div>
+						<div class="panel-body bg-white">
+						  <div class="form-group">
+							<textarea class="form-control" rows="5" id="new-post"></textarea>
+						   </div>
+							 <button type="button" onclick="add_post()" class="btn btn-green-gradient pull-right">post</button>
+					    </div>
+
+                        {% csrf_token %}
+						<div class="panel-body bg-white">
+							<div class="conversations m-b-15" id="conversations-blk">
+								{% for conversation_comment in conversation_comments %}
+                                    {% include 'common/includes/group-inline-conversation.html' with message=conversation_comment.conversation %}
+                                {% endfor %}
+							</div>
+							{% comment %}
+							<div class="row">
+								<div class="col-sm-offset-2 col-sm-10 p-l-0">
+									<button type="button" class="btn btn-green-gradient btn-block">View all Conversations</button>
+								</div>
+							</div>
+							{% endcomment %}
+						</div>
+					</div>
+				</div>
+				<!-/right section End->
+			</div>
+		</div>
+{% endblock content %}
+
+{% block extra-js %}
+    <script type="text/javascript">
+        function add_post() {
+            console.log($('#new-post').val());
+            if($.trim($('#new-post').val()) != '') {
+				$.post(
+					'/group/conversation/{{ group.id }}/',
+					'csrfmiddlewaretoken=' + $('input[name=csrfmiddlewaretoken]').val() + '&new_post=' + $('#new-post').val(),
+					function output(result) {
+						$('#new-post').val('');
+						$(result['new_post']).prependTo($('#conversations-blk'));
+					},
+					'json'
+				)
+			}
+        }
+
+        function reply_post(message_id) {
+        	if($.trim($('#comment-' + message_id).val()) != '') {
+				$.post(
+					'/conversation/comment/' + message_id + '/',
+					'csrfmiddlewaretoken=' + $('input[name=csrfmiddlewaretoken]').val() + '&new_post=' + $('#comment-' + message_id).val(),
+					function output(result) {
+						$(result['new_comment']).appendTo($('#comment-blk-' + message_id));
+						$('#comment-' + message_id).val('');
+					},
+					'json'
+				)
+			}
+        }
+    </script>
+{% endblock extra-js %}

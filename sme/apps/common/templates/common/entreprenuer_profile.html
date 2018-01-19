@@ -43,11 +43,11 @@
                         </div>
                         <div class="row bg-white">
                             <div class="col-sm-12">
-                                <div class="ribbon">
+                                <!--<div class="ribbon">
                                     <span class="label label-info">Started in 2017</a>
-                                </div>
-                                <h4 class="text-blue">My Business</h4>
-                                <h5 class="f-w-600">MINT SEXTY</h3>
+                                </div>-->
+                                <h4 class="text-blue">{{ profile.mentor.company }}</h4>
+                                <h5 class="f-w-600">{{ profile.mentor.company_role }}</h3>
                                     {% for i in profile_industry|slice:"1" %}
                                         <p class="small"> <i class="fa fa-tag fa-rotate-90" aria-hidden="true"></i> {{ i.name }} </p>
                                     {% endfor %}
@@ -56,18 +56,20 @@
                         </div>
                     </div>
                     <div>
-                        <button type="button" class="btn btn-danger">
+                        <a href="{% url 'conversation' to_user_id=profile.user.id %}" class="btn btn-danger">
                             Connect
                             <span class="bg-white rounded-corner p-2 p-l-3 arrow-circle"><i class="fa fa-arrow-right text-red f-s-11"></i></span>
-                        </button>
+                        </a>
                     </div>
                 </div>
+                {% if is_profile_owner %}
                 <div class="col-md-11">
                         <a href="{% url 'edit-profile' profile_type=profile_type %}" class="btn btn-primary" title="Edit Profile">
                           <i class="fa fa-pencil d-i-b" aria-hidden="true"></i>
                           Edit Profile
                         </a>
                 </div>
+                {% endif %}
             </div>
             <!-/right section Start->
             <div class="col-md-8 col-sm-12">
@@ -75,7 +77,7 @@
                     <div class="panel-heading bg-grey-light">
                             <div class="row">
                                     <div class="col-sm-3 col-md-2">
-                                         <img src="../assets/img/profile-icon-female.png" class="img-circle center-block b-w-2" alt="profile-icon-female" width="76" height="76">
+                                         <img src="{% if profile.photo %}{{ profile.photo.url }}{% else %}{% static 'img/no-photo.png' %}{% endif %}" class="img-circle center-block b-w-2" alt="profile-icon-female" width="76" height="76">
                                     </div>
                                     <div class="col-sm-9 col-md-10">
                                             <h5 class="text-blue m-t-5 m-b-4"> {{ user.get_full_name | title }} </h5>
@@ -96,10 +98,10 @@
                     </div>
                     <div class="row btn-sec p-t-15">
                         <div class="col-sm-6 p-b-15">
-                            <button type="button" class="btn btn-danger btn-block">
+                            <a href="{% url 'conversation' to_user_id=profile.user.id %}" class="btn btn-danger btn-block">
                                 Start a Conversation
                                 <span class="bg-white rounded-corner p-2 p-l-3 arrow-circle"><i class="fa fa-arrow-right text-red f-s-11"></i></span>
-                            </button>
+                            </a>
                         </div>
                         <div class="col-sm-6 p-b-15">
                             <button type="button" class="btn btn-grey btn-block">

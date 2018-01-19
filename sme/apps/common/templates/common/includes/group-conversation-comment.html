@@ -1,0 +1,10 @@
+{% load static %}
+
+<div class="panel-body">
+  <span class="pull-right f-s-10">{{ comment.created_at|timesince }}</span>
+  <div class="col-sm-2 text-center">
+    <img src="{% if comment.from_user_profile.photo %}{{ comment.from_user_profile.photo.url }}{% else %}{% static 'img/no-photo.png' %}{% endif %}" class="img-circle border" alt="Group-member-profile" width="50" height="50">
+  </div>
+  <p style="padding-top:12px;">{{ comment.message }}</p>
+  <div class="border-bottom-1 p-t-10 p-b-10"></div>
+</div>

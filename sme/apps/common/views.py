@@ -88,6 +88,29 @@ class AgreeTermsView(View):
         print(profile.id, "PROFILE ID")
         return HttpResponseRedirect(reverse('profile'))
 
+class ViewProfile(TemplateView):
+
+    @method_decorator(login_required)
+    @method_decorator(agree_terms_required)
+    def dispatch(self, *args, **kwargs):
+        return super(ViewProfile, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ViewProfile, self).get_context_data(*args, **kwargs)
+        profile = get_profile({'id': self.kwargs['pk']})
+        #print(profile.agree_terms, "AGEREEE")
+        context.update(is_profile_owner=profile if self.request.user.id == profile.user.id else False,
+                       profile=profile,
+                       profile_id=profile.id,
+                       profile_type=PROFILE_MAP[MENTOR_PROFILE_NAME] if profile.is_mentor else \
+                                                                        PROFILE_MAP[ENTREPRENUER_PROFILE_NAME])
+        return context
+
+    def get_template_names(self, *ar, **kw):
+        profile = get_profile({'id': self.kwargs['pk']})
+        template_name = 'common/mentor_profile.html' if profile.is_mentor else 'common/entreprenuer_profile.html'
+        return [template_name]
+
 class ProfileView(TemplateView):
     #template_name = 'common/profile.html'
 
@@ -154,9 +177,9 @@ class EditProfileView(FormView):
         #experience_formset = modelformset_factory(Experience, form=ExperienceForm, extra=1)
         #experience_formset = experience_formset(queryset=profile.experience.all())
         #print(experience_formset, "EF")
-        context.update(profile_type=self.kwargs['profile_type'],
-                       user_type='mentor' if profile.is_mentor else 'entreprenuer')
+        context.update(profile_type=self.kwargs['profile_type'])
                        #experience_formset=experience_formset)
+        print(context, "Context")
         return context
 
     def get_initial(self):
@@ -171,10 +194,11 @@ class EditProfileView(FormView):
             if mentor:
                 mentor_attributes = ['management_experience', 'ownership_experience', 'business_experience_country',
                                      'website', 'company', 'company_role', 'professional_experience']
-                initial_dict.update(industry=entreprenuer.industry.all(),
-                                    expert_areas=entreprenuer.expert_areas.all())
+                initial_dict.update(industry=mentor.industry.all(),
+                                    expert_areas=mentor.expert_areas.all())
                 for i in mentor_attributes:
-                    initial_dict.update({i: mentor.getattribute(i)})
+                    print(i, mentor.management_experience, )
+                    initial_dict.update({i: mentor.__getattribute__(i)})
         elif profile_type == ENTREPRENUER_PROFILE_NAME:
             if entreprenuer:
                 ent_attributes = ['experience', 'professional_experience', 'need_help']
@@ -206,6 +230,7 @@ class EditProfileView(FormView):
         form.user.first_name = first_name
         form.user.last_name = last_name
         form.user.save()
+        form.save()
         profile = get_profile({'user__id': self.request.user.id})
         print(data)
         profile_type = self.kwargs['profile_type']
@@ -219,6 +244,8 @@ class EditProfileView(FormView):
                               company=data['company'],
                               company_role=data['company_role'])
                 mentor.save()
+                for i in data['industry']:
+                    mentor.industry.add(i)
                 profile.mentor = mentor
                 profile.save()
             else:
@@ -230,12 +257,16 @@ class EditProfileView(FormView):
                 mentor.website = data['website']
                 mentor.company = data['company']
                 mentor.company_role = data['company_role']
+                mentor.industry = data['industry']
                 profile.mentor = mentor
                 profile.mentor.save()
+
         elif not profile.entreprenuer:
             ent = EntrepreneurProfile(professional_experience=data['professional_experience'],
                                         need_help=data['need_help'])
             ent.save()
+            for i in data['industry']:
+                ent.industry.add(i)
             profile.entreprenuer = ent
             profile.save()
         else:
@@ -320,7 +351,8 @@ class SearchView(View):
             results = results.filter(languages_spoken__name__icontains=get_dict['languages_spoken'])
         if 'keywords' in get_dict and get_dict['keywords']:
             results = results.filter(Q(user__first_name__icontains=get_dict['keywords']) | Q(user__last_name__icontains=get_dict['keywords']))
-        context.update(results=results)
+        context.update(results=results,
+                       search=self.kwargs['whom'].title())
         return render(self.request, self.template_name, context)
 
 class AddGroupView(FormView):
@@ -354,7 +386,14 @@ class GroupDetailView(UpdateView):
             context.update(is_joined=True)
         if self.object.created_by.id == current_user.id:
             context.update(is_owner=True)
-        print(context, self.object.owner_id,current_user.id, current_user.id )
+        #question_answers = GroupConversationIntermediate
+        members = self.object.members.all()
+        print(members, "MEM")
+        print(members.filter(is_mentor=True))
+        print(members.filter(is_mentor=False))
+        #print(context, self.object.owner_id,current_user.id, current_user.id )
+        context.update(mentor_group=members.filter(is_mentor=True),
+                       entrepreneur_group=members.filter(is_mentor=False))
         return context
 
     def post(self, *args, **kwargs):
@@ -379,7 +418,7 @@ class TrainingDetailView(DetailView):
         context = super(TrainingDetailView, self).get_context_data(*args, **kwargs)
         current_user = self.request.user
         context.update(current_user=current_user,
-                       current_user_profile=get_profile(user__id=current.user.id),
+                       current_user_profile=get_profile(user__id=current_user.id),
                        messages=self.object.messages.all().order_by('id'))
         print(context, self.object.owner_id, current_user.id, current_user.id)
         return context
@@ -529,3 +568,46 @@ class CoursePayView(View):
             payment.save()
             messages.success(self.request, "Your amount has been successfully transferred!")
         return JsonResponse({'result': 'success'})
+
+class GroupConversationView(View):
+    template_name = 'common/group_conversations.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(GroupConversationView, self).dispatch(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        group = Group.objects.get(id=self.kwargs['pk'])
+        context = {'group': group}
+        conversation_comments = []
+        conversations = group.messages.filter(parent__isnull=True).order_by('-id')
+        for c in conversations:
+            conversation_comments.append({'comments': Conversation.objects.filter(parent=c).order_by('-id'),
+                                          'conversation': c})
+        context.update(conversation_comments=conversation_comments)
+        return render(self.request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        post_data = self.request.POST
+        group = Group.objects.get(id=self.kwargs['pk'])
+        conversation = Conversation(from_user=self.request.user,
+                                    message=post_data['new_post'])
+        conversation.save()
+        GroupConversationIntermediate(group=group,
+                                      conversation=conversation).save()
+        new_post = render_to_string('common/includes/group-inline-conversation.html', {'message': conversation})
+        return JsonResponse({'result': 'success',
+                             'new_post': new_post})
+
+class CommentConversationView(View):
+    def post(self, request, *args, **kwargs):
+        print(self.request.POST)
+        post_data = self.request.POST
+        parent_conversation = Conversation.objects.get(id=self.kwargs['pk'])
+        conversation = Conversation(from_user=self.request.user,
+                                    message=post_data['new_post'],
+                                    parent=parent_conversation)
+        conversation.save()
+        new_comment = render_to_string('common/includes/group-conversation-comment.html', {'comment': conversation})
+        return JsonResponse({'result': 'success',
+                             'new_comment': new_comment})

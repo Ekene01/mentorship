@@ -80,7 +80,6 @@ class MentorProfile(BaseExtraProfile):
     company = models.CharField(max_length=100)
     company_role = models.CharField(max_length=50)
 
-
 class Profile(models.Model):
     user = models.OneToOneField(User)
     address = models.TextField(blank=True, null=True)
@@ -160,7 +159,7 @@ class Conversation(models.Model):
     to_user = models.ForeignKey(User, related_name='to_user', blank=True, null=True)
     message = models.TextField()
     is_read = models.BooleanField(default=False)
-    parent = models.ForeignKey('self', blank=True, null=True)
+    parent = models.ForeignKey('self', blank=True, null=True, related_name='message_parent')
     message_type = models.CharField(max_length=10, choices=MESSAGE_TYPE_CHOICES, default='')
     files = models.ManyToManyField('Files', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -168,10 +167,9 @@ class Conversation(models.Model):
     @property
     def from_user_profile(self):
         try:
-            profile = EntrepreneurProfile.objects.get(user_id=self.from_user.id)
-            is_mentor = False
-        except EntrepreneurProfile.DoesNotExist:
-            profile = MentorProfile.objects.get(user_id=self.from_user.id)
+            profile = Profile.objects.get(user__id=self.from_user.id)
+        except Profile.DoesNotExist:
+            profile = None
         return profile
 
     def __str__(self):
@@ -260,6 +258,8 @@ class Course(models.Model):
     rating = models.IntegerField(blank=True, null=True, default=0)
     offer = models.IntegerField(blank=True, null=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
+    previous_amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    end_dt = models.DateTimeField(blank=True, null=True)
     instructor = models.ManyToManyField(Profile, through='CourseInstructorProfile', blank=True)
     teacher = models.ManyToManyField(Profile, related_name='course_teachers')
     videos = models.ManyToManyField('Videos', blank=True, related_name='course_videos')
@@ -279,6 +279,10 @@ class Course(models.Model):
     def rating_unfilled(self):
         filled = 0 if not self.rating else self.rating
         return range(5 - filled)
+
+    @property
+    def course_mentor(self):
+        return  self.teacher.all()[0]
 
 class CourseInstructorProfile(models.Model):
     profile = models.ForeignKey(Profile)

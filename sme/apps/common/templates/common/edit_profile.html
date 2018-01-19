@@ -21,78 +21,111 @@
                         <div class="panel panel-default">
                             <div id="collapse1" class="panel-collapse collapse in">
                                 <div class="panel-body">
-                                    <div class="form-group">
+                                    {% with err=form.photo.errors %}
+                                    <div class="form-group{% if err %} has-error{% endif %}">
                                         <label for="Photo" class="col-sm-4 control-label">Photo</label>
                                         <div class="col-sm-4">
                                             {% if form.photo %}
                                                 <img src="{% if form.photo.value %}{{ MEDIA_URL }}{{ form.photo.value }}{% else %}{% static 'img/no-photo.png' %}{% endif %}" alt="profile-icon-female" style="margin-bottom: 10px;" width="98" height="98">
                                             {% endif %}
                                             {{ form.photo }}
+                                            <span class="text-danger">{{ err.0 }}</span>
                                         </div>
                                     </div>
-                                    <div class="form-group">
+                                    {% endwith %}
+                                    {% with err=form.first_name.errors %}
+                                    <div class="form-group{% if err %} has-error{% endif %}">
                                         <label for="firstName" class="col-sm-4 control-label">First Name</label>
                                         <div class="col-sm-4">
                                             {{ form.first_name }}
+                                            <span class="text-danger">{{ err.0 }}</span>
                                         </div>
                                     </div>
-                                    <div class="form-group">
+                                    {% endwith %}
+                                    {% with err=form.last_name.errors %}
+                                    <div class="form-group{% if err %} has-error{% endif %}">
                                         <label for="lastName" class="col-sm-4 control-label">Last Name</label>
                                         <div class="col-sm-4">
                                             {{ form.last_name }}
+                                            <span class="text-danger">{{ err.0 }}</span>
                                         </div>
                                     </div>
-                                    <div class="form-group">
+                                    {% endwith %}
+                                    {% with err=form.address.errors %}
+                                    <div class="form-group{% if err %} has-error{% endif %}">
                                         <label for="address" class="col-sm-4 control-label">Address</label>
                                         <div class="col-sm-4">
                                             {{ form.address }}
+                                            <span class="text-danger">{{ err.0 }}</span>
                                         </div>
                                     </div>
-                                    <div class="form-group">
+                                    {% endwith %}
+                                    {% with err=form.city.errors %}
+                                    <div class="form-group{% if err %} has-error{% endif %}">
                                         <label for="state" class="col-sm-4 control-label">City</label>
                                         <div class="col-sm-4">
                                             {{ form.city }}
+                                            <span class="text-danger">{{ err.0 }}</span>
                                         </div>
                                     </div>
-                                    <div class="form-group">
+                                    {% endwith %}
+                                    {% with err=form.state.errors %}
+                                    <div class="form-group{% if err %} has-error{% endif %}">
                                         <label for="state" class="col-sm-4 control-label">State</label>
                                         <div class="col-sm-4">
                                             {{ form.state }}
+                                            <span class="text-danger">{{ err.0 }}</span>
                                         </div>
                                     </div>
-                                    <div class="form-group">
+                                    {% endwith %}
+                                    {% with err=form.country.errors %}
+                                    <div class="form-group{% if err %} has-error{% endif %}">
                                         <label for="country" class="col-sm-4 control-label">Country</label>
                                         <div class="col-sm-4">
                                             {{ form.country }}
+                                            <span class="text-danger">{{ err.0 }}</span>
                                         </div>
                                     </div>
-                                    <div class="form-group">
+                                    {% endwith %}
+                                    {% with err=form.postal_code.errors %}
+                                    <div class="form-group{% if err %} has-error{% endif %}">
                                         <label for="country" class="col-sm-4 control-label">Postal code</label>
                                         <div class="col-sm-4">
                                             {{ form.postal_code }}
+                                            <span class="text-danger">{{ err.0 }}</span>
                                         </div>
                                     </div>
-                                    <div class="form-group">
+                                    {% endwith %}
+                                    {% with err=form.phone_number.errors %}
+                                    <div class="form-group{% if err %} has-error{% endif %}">
                                         <label for="country" class="col-sm-4 control-label">Phone number</label>
                                         <div class="col-sm-4">
                                             {{ form.phone_number }}
                                             <span class="" style="color: #404040;">({{ form.phone_number.help_text }})</span>
+                                            <span class="text-danger">{{ err.0 }}</span>
                                         </div>
                                     </div>
-                                    <div class="form-group">
+                                    {% endwith %}
+                                    {% with err=form.about_me.errors %}
+                                    <div class="form-group{% if err %} has-error{% endif %}">
                                         <label for="country" class="col-sm-4 control-label">About me</label>
                                         <div class="col-sm-4">
                                             {{ form.about_me }}
                                             <span class="" style="color: #404040;">({{ form.about_me.help_text }})</span>
+                                            <span class="text-danger">{{ err.0 }}</span>
                                         </div>
                                     </div>
-                                    <div class="form-group">
+                                    {% endwith %}
+                                    {% with err=form.professional_experience.errors %}
+                                    <div class="form-group{% if err %} has-error{% endif %}">
                                         <label for="id_professional_experience" class="col-sm-4 control-label">Professional Experience</label>
                                         <div class="col-sm-4">
                                             {{ form.professional_experience }}
                                             <span class="" style="color: #404040;">{{ form.professional_experience.help_text }}</span>
+                                            <span class="text-danger">{{ err.0 }}</span>
                                         </div>
                                     </div>
+                                    {% endwith %}
                                     {% with err=form.industry.errors %}
                                     <div class="form-group{% if err %} has-error{% endif %}">
                                         <label for="id_industry" class="col-sm-4 control-label">Industry</label>
@@ -102,89 +135,105 @@
                                         </div>
                                     </div>
                                     {% endwith %}
-                                    <div class="form-group">
+                                    {% with err=form.languages_spoken.errors %}
+                                    <div class="form-group{% if err %} has-error{% endif %}">
                                         <label for="Photo" class="col-sm-4 control-label">Languages</label>
                                         <div class="col-sm-4">
                                             {{ form.languages_spoken }}
+                                            <span class="text-danger">{{ err.0 }}</span>
                                         </div>
                                     </div>
-                                    {% if user_type == 'mentor' %}
-                                        <div class="form-group">
+                                    {% endwith %}
+                                    {% if profile_type == 'mentor' %}
+                                        {% with err=form.business_experience_country.errors %}
+                                        <div class="form-group{% if err %} has-error{% endif %}">
+                                            <label for="Photo" class="col-sm-4 control-label">Business experience Country﻿*</label>
+                                            <div class="col-sm-4">
+                                                {{ form.business_experience_country }}
+                                                <span class="text-danger">{{ err.0 }}</span>
+                                            </div>
+                                        </div>
+                                        {% endwith %}
+
+                                        {% with err=form.management_experience.errors %}
+                                        <div class="form-group{% if err %} has-error{% endif %}">
                                             <label for="Photo" class="col-sm-4 control-label">How many years of business management experience do you have?﻿*</label>
                                             <div class="col-sm-4">
                                                 {{ form.management_experience }}
+                                                <span class="text-danger">{{ err.0 }}</span>
                                             </div>
                                         </div>
+                                        {% endwith %}
 
-                                        <div class="form-group">
+                                        {% with err=form.ownership_experience.errors %}
+                                        <div class="form-group{% if err %} has-error{% endif %}">
                                             <label for="Photo" class="col-sm-4 control-label">How many years of ownership experience do you have?﻿*</label>
                                             <div class="col-sm-4">
                                                 {{ form.ownership_experience }}
+                                                <span class="text-danger">{{ err.0 }}</span>
                                             </div>
                                         </div>
+                                        {% endwith %}
 
-                                        <div class="form-group">
-                                            <label for="Photo" class="col-sm-4 control-label">Your company</label>
+                                        {% with err=form.company.errors %}
+                                        <div class="form-group{% if err %} has-error{% endif %}">
+                                            <label for="Photo" class="col-sm-4 control-label">Your company *</label>
                                             <div class="col-sm-4">
                                                 {{ form.company }}
+                                                <span class="text-danger">{{ err.0 }}</span>
                                             </div>
                                         </div>
-
-                                        <div class="form-group">
-                                            <label for="Photo" class="col-sm-4 control-label">Your role at this company</label>
+                                        {% endwith %}
+                                        {% with err=form.company_role.errors %}
+                                        <div class="form-group{% if err %} has-error{% endif %}">
+                                            <label for="Photo" class="col-sm-4 control-label">Your role at this company *</label>
                                             <div class="col-sm-4">
                                                 {{ form.company_role }}
+                                                <span class="text-danger">{{ err.0 }}</span>
                                             </div>
                                         </div>
-
-                                        <div class="form-group">
-                                            <label for="Photo" class="col-sm-4 control-label">Website</label>
+                                        {% endwith %}
+                                        {% with err=form.website.errors %}
+                                        <div class="form-group{% if err %} has-error{% endif %}">
+                                            <label for="Photo" class="col-sm-4 control-label">Website *</label>
                                             <div class="col-sm-4">
                                                 {{ form.website }}
                                                 <span class="" style="color: #404040;">({{ form.website.help_text }})</span>
+                                                <span class="text-danger">{{ err.0 }}</span>
                                             </div>
                                         </div>
-                                        {% comment %}
-                                        <div class="form-group m-b-0 last">
-                                            <div class="col-sm-2 col-sm-offset-4">
-                                                <label class="btn-bs-file btn btn-primary">
-                                                    Change Photo
-                                                    <input type="file" id="change-photo" name="change-photo" />
-                                                </label>
-                                            </div>
-                                            <div class="col-sm-6 text-right">
-                                                <button type="submit" class="btn btn-success">
-                                                    Save &amp; Continue
-                                                </button>
-                                                <button type="reset" class="btn btn-danger">
-                                                    Reset
-                                                </button>
-                                            </div>
-                                        </div>
-                                        {% endcomment %}
+                                        {% endwith %}
                                     {% else %}
-                                        <div class="form-group">
+                                        {% with err=form.need_help.errors %}
+                                        <div class="form-group{% if err %} has-error{% endif %}">
                                             <label for="id_need_help" class="col-sm-4 control-label">Need help</label>
                                             <div class="col-sm-4">
                                                 {{ form.need_help }}
                                                 <span class="" style="color: #404040;">{{ form.need_help.help_text }}</span>
+                                                <span class="text-danger">{{ err.0 }}</span>
                                             </div>
                                         </div>
+                                        {% endwith %}
                                     {% endif %}
 
-                                    <div class="form-group">
-                                        <label for="Photo" class="col-sm-4 control-label">Gender</label>
+                                    {% with err=form.gender.errors %}
+                                    <div class="form-group{% if err %} has-error{% endif %}">
+                                        <label for="Photo" class="col-sm-4 control-label">Gender *</label>
                                         <div class="col-sm-4">
                                             {{ form.gender }}
+                                            <span class="text-danger">{{ err.0 }}</span>
                                         </div>
                                     </div>
-
-                                    <div class="form-group">
+                                    {% endwith %}
+                                    {% with err=form.birth_year.errors %}
+                                    <div class="form-group{% if err %} has-error{% endif %}">
                                         <label for="Photo" class="col-sm-4 control-label">Birth Year</label>
                                         <div class="col-sm-4">
                                             {{ form.birth_year }}
+                                            <span class="text-danger">{{ err.0 }}</span>
                                         </div>
                                     </div>
+                                    {% endwith %}
                                 </div>
                             </div>
                         </div>

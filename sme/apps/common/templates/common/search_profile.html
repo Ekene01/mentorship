@@ -17,7 +17,7 @@
 	<div class="container">
 		<div class="panel panel-default m-t-20">
 			<div class="panel-heading">
-				<div class="f-s-24"> <b> Find Mentors and Connect </b> </div>
+				<div class="f-s-24"> <b> Find {{ search }}s and Connect </b> </div>
 				<p> We have sorted these search results based on information in your profile. </p>
 			</div>
 			<div class="panel-body">
@@ -100,22 +100,26 @@
 												 </div>
 												 <div class="row bg-white">
 														<div class="col-sm-12">
-															 <div class="ribbon">
+															{% comment %}
+															<div class="ribbon">
 																	<span class="label label-info">Started in 2017
 																	</span>
 															 </div>
-															 <h4 class="text-blue">My Business</h4>
-															 <h5 class="f-w-600">MINT SEXTY</h5>
+															{% endcomment %}
+															 <h4 class="text-blue">{{ profile.mentor.company_role }}</h4>
+															 <h5 class="f-w-600">{{ profile.mentor.company }}</h5>
 															 {% for i in profile.industry.all %}
 															 	<p class="small"> <i class="fa fa-tag fa-rotate-90" aria-hidden="true"></i> {{ i.name }} </p>
 															 {% endfor %}
+															{% if profile.about_me %}
 															 <p class="text-ellipsis">"{{ profile.about_me | truncatewords:"4" }}"</p>
+															{% endif %}
 														</div>
 												 </div>
 											</div>
 										</div>
 										<div>
-												 <a href="{% url 'conversation' to_user_id=profile.user.id %}" class="btn btn-danger">
+												 <a href="{% url 'view-profile' pk=profile.id %}" class="btn btn-danger">
 												 Connect 
 												 <span class="bg-white rounded-corner p-2 p-l-3 arrow-circle"><i class="fa fa-arrow-right text-red f-s-11"></i></span>
 												 </a>

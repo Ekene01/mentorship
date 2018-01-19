@@ -53,18 +53,20 @@
                         </div>
                     </div>
                     <div>
-                        <button type="button" class="btn btn-danger">
+                        <a href="{% url 'conversation' to_user_id=profile.user.id %}" class="btn btn-danger">
                             Connect
                             <span class="bg-white rounded-corner p-2 p-l-3 arrow-circle"><i class="fa fa-arrow-right text-red f-s-11"></i></span>
-                        </button>
+                        </a>
                     </div>
                 </div>
+                {% if is_profile_owner %}
                 <div class="col-md-11">
                         <a href="{% url 'edit-profile' profile_type=profile_type %}" class="btn btn-primary" title="Edit Profile">
                           <i class="fa fa-pencil d-i-b" aria-hidden="true"></i>
                           Edit Profile
                         </a>
                 </div>
+                {% endif %}
             </div>
             <!-right section Start->
             <div class="col-md-8 col-sm-12">
@@ -94,10 +96,10 @@
                     </div>
                     <div class="row btn-sec p-t-15">
                         <div class="col-sm-6 p-b-15">
-                            <button type="button" class="btn btn-danger btn-block">
+                            <a href="{% url 'conversation' to_user_id=profile.user.id %}" class="btn btn-danger btn-block">
                                 Start a Conversation
                                 <span class="bg-white rounded-corner p-2 p-l-3 arrow-circle"><i class="fa fa-arrow-right text-red f-s-11"></i></span>
-                            </button>
+                            </a>
                         </div>
                         <div class="col-sm-6 p-b-15">
                             <button type="button" class="btn btn-grey btn-block">
@@ -115,7 +117,7 @@
                                         <p>{{ profile.about_me|default_if_none:"" }}</p>
                                         <h4>My Professinal Experience</h4>
                                         <p>
-                                            {{ profile.professional_experience|default_if_none:"" }}
+                                            {{ profile.mentor.professional_experience|default_if_none:"" }}
                                         </p>
                                     </div>
                                     <div class="col-md-5 ex-request">
@@ -123,7 +125,7 @@
                                             <div>Expertise</div>
                                             <ul class="list-unstyled">
                                                 <li>
-                                                    {% for i in profile_industry %}
+                                                    {% for i in profile.mentor.industry.all %}
                                                         <span class="p-l-5 p-r-5">&#187;</span>{{ i.name }}
                                                     {% endfor %}
                                                 </li>
@@ -132,23 +134,26 @@
                                             <div>Experience</div>
                                             <ul class="list-unstyled">
                                                 <li>
-                                                    <span class="p-r-5">Ownership Experience :</span> <span>4 yrs</span>
+                                                    <span class="p-r-5">Ownership Experience :</span> <span>{{ profile.mentor.ownership_experience }} Yrs</span>
                                                 </li>
                                                 <li>
-                                                    <span class="p-r-5">Management Experience :</span> <span>5 yrs</span>
+                                                    <span class="p-r-5">Management Experience :</span> <span>{{ profile.mentor.management_experience }} Yrs</span>
                                                 </li>
                                                 <li>
-                                                    <span class="p-r-5">Languages Spoken :</span> <span>English</span>
+                                                    <span class="p-r-5">Languages Spoken :</span>
+                                                    {% for i in profile.languages_spoken.all %}
+                                                        <span>{{ i.name }},</span>
+                                                    {% endfor %}
                                                 </li>
                                                 <li>
-                                                    <span class="p-r-5">Country Experience :</span> <span>United States</span>
+                                                    <span class="p-r-5">Country Experience :</span> <span>{{ profile.mentor.business_experience_country }}</span>
                                                 </li>
                                             </ul>
                                             <hr />
                                             <p>
-                                                Executive and Leadership Coach at BrightSpark Coaching
-                                                <a href="https://www.linkedin.com/in/nikikohari" target="_blank" class="text-white">
-                                                    https://www.linkedin.com/in/nikikohari
+                                                {{ profile.mentor.company_role }} at {{ profile.mentor.company }}
+                                                <a href="{{ profile.mentor.website }}" target="_blank" class="text-white">
+                                                    {{ profile.mentor.website }}
                                                 </a>
                                             </p>
                                         </div>

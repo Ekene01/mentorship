@@ -22,53 +22,234 @@
 	        </div>
 	      {% endfor %}
       {% endif %}
-        <div class="row p-t-20">
-            <div class="col-md-12 col-sm-12">
-                <div class="panel panel-default contentbg b-ra-0 p-t-15 p-l-15 p-b-5 p-r-15 m-t-50">
-                    <div class="panel-heading bg-grey-light">
-                            <div class="row">
-                                    {% if object.image %}
-                                    <div class="col-lg-4 col-sm-12 text-center-sm">
-                                        <img src="{{ object.image.url }}" class="img-circle b-w-2" alt="profile-icon-female" width="98" height="98">
-                                    </div>
-                                    {% endif %}
-                                    <div class="col-lg-8 col-sm-12">
-                                            <h4 class="text-blue m-b-4"> {{ object.name | title }} </h4>
-                                    </div>
-                            </div>
-                    </div>
-                    <div class="panel-body p-b-0 p-t-0">
-                        <div class="row bg-white">
-                            <div class="col-sm-12">
-                                <h4>Summary</h4>
-                                <!--<p>Human Resources &#187; Employee Training</p>-->
-                                <p>
-                                    {{ object.description }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-right section Start->
-            <div class="col-md-12 col-sm-12">
-                <div class="row btn-sec p-t-15">
-                    <div class="col-md-2 col-md-offset-5 p-b-15">
-                        {% if is_purchased %}
-                            <button class="btn btn-danger btn-block">
-                                You already purchased!
-                            </button>
-                        {% else %}
-                            <a href="{% url 'pay-course' pk=object.id %}" class="btn btn-danger btn-block">
-                                Buy course
-                            </a>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-            <!-/right section End->
-        </div>
-    </div>
+<div class="course-details">
+    {% if messages %}
+	      {% for message in messages %}
+	        <div class="top-msg-blk fade in alert {% if message.tags %}alert-{{ message.tags }}"{% endif %}>
+	          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+	          {{ message }}
+	        </div>
+	      {% endfor %}
+      {% endif %}
+			<div class="f-s-24 h1 m-0 p-t-30 p-b-15 p-l-15 bg-white">Courses</div>
+			<div class="container-fluid">
+				<!--/HighlightBoxes End-->
+				<div class="position-relative">
+					<div class="row highlight-boxes bg-grey-active">
+						<div class="col-md-6 col-md-offset-1 col-sm-7 text-white">
+							<div class="lead-head">
+								<h1 class="p-t-35">{{ object.name }}</h1>
+								<p>
+									{{ object.description | truncatewords_html:10 }}
+								</p>
+							</div>
+							<p class="bottom-line">
+								<span class="star-rate f-s-20 d-i-b p-r-15">
+									<i class="fa fa-star text-yellow"></i>
+									<i class="fa fa-star text-yellow"></i>
+									<i class="fa fa-star text-gray"></i>
+									<i class="fa fa-star text-gray"></i>
+									<i class="fa fa-star text-gray"></i>
+								</span>
+								<span class="f-w-600">2.40 (<span>200 ratings</span>) 250 Stundents Enrolled</span>
+							</p>
+							<p class="p-t-40 p-b-20">
+								<a href="{% url 'pay-course' pk=object.id %}" class="btn btn-success rounded-corner-25">Check Out Course</a>
+							</p>
+						</div>
+					</div>
+					<div class="p-t-15 buynow">
+						<div class="thumbnail p-0 no-border rounded-corner-10">
+                            {% if object.image %}
+							    <img class="img-rounded" src="{{ object.image.url }}" alt="wonder-woman"/>
+                            {% endif %}
+							<div class="caption p-t-15 p-b-30">
+								<div class="p-t-15 p-b-5">
+									<img class="forma" src="{% static 'img/Forma.png' %}" alt="Forma" width="42" height="42">
+									<span class="d-i-b f-w-600">
+										<span class="text-muted f-s-20 ver-align-m d-i-b p-r-15">{{ object.amount }}</span>
+										<span class="f-s-14 ver-align-m"><del class="d-i-b p-r-15">{{ object.previous_amount }}</del> {{ object.offer }}% off</span>
+									</span>
+								</div>
+								<div class="p-t-15 p-b-20">
+									<img class="alarm-clock" src="{% static 'img/alarm-clock.png' %}" alt="alarm-clock" width="20" height="20">
+									<span class="text-warning f-s-14 ver-align-m d-i-b">
+										<span class="f-w-600">{{ object.end_dt | timeuntil }}</span> <span> left at this price </span>
+									</span>
+								</div>
+                                {% if is_purchased %}
+                                    <p class="btn-block">
+                                        <a href="{% url 'pay-course' pk=object.id %}" class="btn btn-success btn-lg btn-block m-b-15" role="button">Buy Now</a>
+                                        <!--<a href="#" class="btn btn-default btn-lg btn-block" role="button">Add To Cart</a>-->
+                                    </p>
+                                {% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--/HighlightBoxes End-->
+				<div class="row m-t-30">
+					<div class="col-md-7 col-sm-12 left-sec">
+						<div class="section-content bg-white p-15">
+							<h4 class="f-w-600">By the End of this Course, I will</h4>
+							<div class="row">
+								<div class="col-md-6">
+									<ul class="">
+										<li>Understand the fundamentals of taxation</li>
+										<li>Understand the fundamentals of taxation</li>
+									</ul>
+								</div>
+								<div class="col-md-6">
+									<ul class="">
+										<li>Understand the fundamentals of taxation</li>
+									</ul>
+								</div>
+							</div>
+							<p class="show-more"><a href="" class="text-black f-w-600">Show More</a></p>
+						</div>
+						<div class="section-content bg-white p-15">
+							<h4 class="f-w-600">What you need to know first</h4>
+							<div class="row p-b-30">
+								<div class="col-md-6">
+									<ul class="">
+										<li>Understand the fundamentals of taxation</li>
+										<li>Understand the fundamentals of taxation</li>
+									</ul>
+								</div>
+							</div>
+							<h4 class="f-w-600">The Course in Detail</h4>
+							<p>
+								{{ object.description }}
+							</p>
+						</div>
+						<div class="section-content bg-white p-15">
+							<h4 class="f-w-600">Meet Your Trainer</h4>
+							<p class="text-warning">{{ object.course_mentor.user.get_full_name | title }}</p>
+							<p>{{ object.name }}</p>
+							<div class="row p-b-30">
+								<div class="col-md-4 col-sm-5">
+									<img class="avatar img-circle" src="{% if object.course_mentor.photo %}{{ object.course_mentor.photo.url }}{% else %}{% static 'img/no-photo.png' %}{% endif %}" alt="Avatar4_250x250" width="138" height="138">
+									<div class="user-detail p-t-15">
+										<span>
+											<i class="fa fa-star f-s-20 text-yellow"></i> 3.0Average Rating
+										</span><br>
+										<span>
+											<i class="fa fa-comments f-s-20 text-yellow"></i> 200 Reviews
+										</span><br>
+										<span>
+											<img class="graduate-student-icon" src="../assets/img/graduate-student-icon.png" alt="graduate-student-icon" width="20" height="20">
+											400 Students
+										</span><br>
+										<span>
+											<img class="write-board" src="../assets/img/write-board.png" alt="write-board" width="20" height="20">
+											1 Course
+										</span><br>
+									</div>
+								</div>
+								<div class="col-md-8 col-sm-7 section-content">
+									<p>
+										lorem ipsum dolor sit amet, consectetur adipiscing elit. maecenas imperdiet venenatis sodales. nunc
+										elementum scelerisque nibh, nec pellentesque lacus hendrerit sit amet. cum sociis natoque
+										penatibus et magnis dis parturient montes, nascetur ridiculus mus. cras luctus euismod augue,
+										vitae pulvinar est feugiat vitae. nunc ultricies facilisis mi sed commodo. aliquam erat volutpat. etiam
+										id libero nunc. morbi porttitor porta urna at facilisis.
+									</p>
+									<p class="m-t-20"><a href="" class="text-black f-w-600">Show More</a></p>
+								</div>
+							</div>
+						</div>
+						<div class="section-content bg-white p-15">
+							<div class="section-content">
+								<h4 class="f-w-600">Student Rating and Feedback</h4>
+								<p class="f-s-44 p-l-15">3.0</p>
+								<p class="star-rate f-s-20 d-i-b p-r-15">
+									<i class="fa fa-star text-yellow"></i>
+									<i class="fa fa-star text-yellow"></i>
+									<i class="fa fa-star text-yellow"></i>
+									<i class="fa fa-star text-gray"></i>
+									<i class="fa fa-star text-gray"></i>
+								</p>
+							</div>
+							<div class="heading border-bottom-1 p-b-15">
+								<div class="row">
+									<div class="col-sm-6 f-w-600">Reviews</div>
+									<div class="col-sm-6">
+										<div class="input-group">
+											<input class="form-control" placeholder="Search in Reviews"> <span class="input-group-btn">
+											<button class="btn btn-primary" type="button"> <i class="fa fa-search"></i> </button></span>
+										</div>
+									</div>
+								</div>
+							</div>
 
-    <!-- Page section end-->
+							<div class="row reviews p-t-20">
+								<div class="col-md-4">
+									<div class="user-detail">
+										<img class="avatar img-circle d-i-b" src="../assets/img/avatar1-250x250.jpg" alt="Avatar1_250x250" width="58" height="58">
+										<div class="d-i-b ver-align-m">
+											<p class="m-b-0">8 days ago</p>
+											<p class="m-b-0">Dimitrios Tsiridakis</p>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-8 section-content">
+									<p class="star-rate f-s-20 d-i-b p-r-15">
+										<i class="fa fa-star text-yellow"></i>
+										<i class="fa fa-star text-yellow"></i>
+										<i class="fa fa-star text-yellow"></i>
+										<i class="fa fa-star text-yellow"></i>
+										<i class="fa fa-star text-gray"></i>
+									</p>
+									<p>Finally after 4 months this course has ended.</p>
+									<p>I learn a lot from this bootcamp and the money is really really low for this stuff.</p>
+									<p>I highly recommended this course to other student's to change their carriers into to webdev world.</p>
+									<p>
+										First of all i want to think lan, that helps this community is a great developer with deep
+										understanding of what he says and what is doing.
+									</p>
+									<p>I wish a lot to meet him and give me some of his knowledge and</p>
+									<p class="help block text-muted">
+										Was this review helpful? <a href="" class="btn btn-default m-l-15">Yes</a><a href="" class="btn btn-default m-l-15">No</a>
+										<a href="" class="p-l-30 d-i-b text-muted" title="Report this review">Report</a>
+									</p>
+								</div>
+							</div>
+
+							<div class="row reviews p-t-20 border-top-1">
+								<div class="col-md-4">
+									<div class="user-detail">
+										<img class="avatar img-circle d-i-b" src="../assets/img/avatar2-250x250.jpg" alt="Avatar2_250x250" width="58" height="58">
+										<div class="d-i-b ver-align-m">
+											<p class="m-b-0">a month ago</p>
+											<p class="m-b-0">Matthew Player</p>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-8 section-content">
+									<p class="star-rate f-s-20 d-i-b p-r-15">
+										<i class="fa fa-star text-yellow"></i>
+										<i class="fa fa-star text-yellow"></i>
+										<i class="fa fa-star text-yellow"></i>
+										<i class="fa fa-star text-yellow"></i>
+										<i class="fa fa-star text-gray"></i>
+									</p>
+									<p>
+										Colt is clear and methodical with his teaching. He gives step-by-step versions of all
+										of his apps so you can error-check against your version and if this doesn't work, the TA
+										team are brilliant at getting bacjk with answers to queries (assuming that it hasn't been answered already
+										in the FAQs, which it probably has).
+									</p>
+									<p class="help block text-muted">
+										Was this review helpful? <a href="" class="btn btn-default m-l-15">Yes</a><a href="" class="btn btn-default m-l-15">No</a>
+										<a href="" class="p-l-30 d-i-b text-muted" title="Report this review">Report</a>
+									</p>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div><!--/.row-->
+			</div>
+		</div><!--/.course-details-->
+		<!-- Page section end-->
 {% endblock content %}

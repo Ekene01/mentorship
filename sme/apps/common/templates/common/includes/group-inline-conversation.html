@@ -1,0 +1,35 @@
+{% load static %}
+
+<div class="border-bottom-1 p-b-15">
+    <div class="row">
+        <div class="col-sm-2 text-center">
+            <img src="{% if message.from_user_profile.photo %}{{ message.from_user_profile.photo.url }}{% else %}{% static 'img/no-photo.png' %}{% endif %}" class="img-circle border" alt="Group-member-profile" width="70" height="70"/>
+        </div>
+        <div class="col-sm-10 p-l-0">
+            <h4 class="m-t-4 m-b-4 f-w-600 clearfix">
+                {{ message.from_user.get_full_name | title }}
+                <span class="pull-right f-s-13">{{ message.created_at|timesince }}</span>
+            </h4>
+            <p>
+                {{ message.message }}
+            </p>
+
+            <div class="panel-default inner-comments" id="comment-blk-{{ message.id }}">
+                {% for i in conversation_comment.comments %}
+                    {% include 'common/includes/group-conversation-comment.html' with comment=i %}
+                {% endfor %}
+            </div>
+            <div class="form-group panel-body">
+                <textarea class="form-control" rows="1" id="comment-{{ message.id }}"></textarea>
+            </div>
+            <button type="button" class="btn btn-sm btn-green-gradient pull-right" onclick="reply_post('{{ message.id }}');">Post</button>
+        </div>
+        {% comment %}
+        <div class="clearfix">
+            <a href="javascript:void(0);" class="text-muted f-s-13" onclick="reply_post('{{ message.id }}')"><i class="fa fa-reply p-r-5"></i> <span class="f-w-600">Comment</span></a>
+            <span class="f-w-600 text-gray pull-right h4 m-0">&hellip;</span>
+
+        </div>
+        {% endcomment %}
+    </div>
+</div>
